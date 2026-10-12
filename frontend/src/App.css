@@ -1,34 +1,25 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.anim-in {
+  animation: fadeUp 0.5s ease-out both;
+}
+.anim-in-2 { animation: fadeUp 0.5s ease-out 0.08s both; }
+.anim-in-3 { animation: fadeUp 0.5s ease-out 0.16s both; }
+.anim-in-4 { animation: fadeUp 0.5s ease-out 0.24s both; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.islamic-pattern {
+  background-image:
+    radial-gradient(circle at 0 0, rgba(245, 158, 11, 0.07) 0 12px, transparent 13px),
+    radial-gradient(circle at 24px 24px, rgba(255, 255, 255, 0.04) 0 12px, transparent 13px);
+  background-size: 48px 48px;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
+.mono { font-family: "JetBrains Mono", monospace; }
 
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff !important; }
 }

@@ -1,57 +1,60 @@
-import { useEffect } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider, useAuth, HOME } from "@/context/AuthContext";
+import Layout from "@/components/Layout";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
+import Santri from "@/pages/Santri";
+import Pembayaran from "@/pages/Pembayaran";
+import Kwitansi from "@/pages/Kwitansi";
+import Absensi from "@/pages/Absensi";
+import Jadwal from "@/pages/Jadwal";
+import KenaikanKelas from "@/pages/KenaikanKelas";
+import Keuangan from "@/pages/Keuangan";
+import Master from "@/pages/Master";
+import Pengguna from "@/pages/Pengguna";
+import Portal from "@/pages/Portal";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    // The marker attribute below lets the platform probe detect the stock splash — remove it with this page
-    <div data-emergent-splash>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+function Guard({ roles, children }) {
+  const { user } = useAuth();
+  if (user === null) return <div className="min-h-screen grid place-items-center text-emerald-800" data-testid="app-loading">Memuat...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (roles && !roles.includes(user.role)) return <Navigate to={HOME[user.role]} replace />;
+  return children;
 }
 
-export default App;
+function Root() {
+  const { user } = useAuth();
+  return <Navigate to={user ? HOME[user.role] : "/login"} replace />;
+}
+
+const A = ["admin"], S = ["admin", "pengurus"];
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/kwitansi/:id" element={<Guard roles={["admin", "pengurus", "santri"]}><Kwitansi /></Guard>} />
+          <Route element={<Guard><Layout /></Guard>}>
+            <Route index element={<Root />} />
+            <Route path="dashboard" element={<Guard roles={S}><Dashboard /></Guard>} />
+            <Route path="santri" element={<Guard roles={S}><Santri /></Guard>} />
+            <Route path="pembayaran" element={<Guard roles={S}><Pembayaran /></Guard>} />
+            <Route path="absensi" element={<Guard roles={["admin", "pengurus", "ustadz"]}><Absensi /></Guard>} />
+            <Route path="jadwal" element={<Guard roles={S}><Jadwal /></Guard>} />
+            <Route path="kenaikan-kelas" element={<Guard roles={A}><KenaikanKelas /></Guard>} />
+            <Route path="keuangan" element={<Guard roles={A}><Keuangan /></Guard>} />
+            <Route path="master" element={<Guard roles={A}><Master /></Guard>} />
+            <Route path="pengguna" element={<Guard roles={A}><Pengguna /></Guard>} />
+            <Route path="portal" element={<Guard roles={["santri"]}><Portal /></Guard>} />
+          </Route>
+          <Route path="*" element={<Root />} />
+        </Routes>
+      </BrowserRouter>
+      <Toaster richColors position="top-right" />
+    </AuthProvider>
+  );
+}
