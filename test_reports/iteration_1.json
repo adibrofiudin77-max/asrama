@@ -1,0 +1,20 @@
+{
+  "summary": "First test run on Alhasani Pondok Pesantren app. Backend: 27/27 pytest tests pass (serial) — admin+santri login, santri CRUD + duplicate NIS, tagihan compute, pay/duplicate reject, bebaskan+revert, payment GET + santri isolation (403/404), jadwal CRUD, absensi save+read, dashboard (both periode), kamar/ustadz/pengurus/ustadz CRUD, role-based access (pengurus→403 on /keuangan,/users; ustadz→403 on /santri; both OK on allowed resources), keuangan CRUD with totals, change-password flow. Frontend: admin and santri logins work, wrong password shows toast 'NIS/Email atau password salah', dashboard renders stats + Top 5 cards + periode toggle, all pages (Santri, Pembayaran, Keuangan, Jadwal, Master, Pengguna, Portal) load with required data-testid attributes. Kwitansi /kwitansi/28 renders Envelope C5 landscape container (865×612 px, ratio 1.414 = 229/162), correct header 'PONDOK PESANTREN ALHASANI LIMPUNG · Jl. KH. Wahid Hasyim No. 01 Limpung', amount Rp 100.000, terbilang 'Seratus ribu rupiah', signature = pengurus name ('yano'). Santri portal shows Tagihan/Jadwal/Kehadiran tabs with own data.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_alhasani.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "pytest.ini forces -n 2 --dist loadscope but session-scoped fixture test_santri in test_alhasani.py was not safe across workers — fixture now tolerates 400 'NIS sudah terdaftar' so parallel re-runs don't flake. Prefer -o addopts='' or `-n 0` for deterministic serial runs.",
+    "auth.py:88 bug in login_attempts tracking: on failed login it writes attempts=0 when `locked` is set, so the fifth failure records attempts=0 (locked_until correct). Harmless but counter is misleading. Minor.",
+    "server.py adds CORSMiddleware AFTER include_router so OPTIONS preflight on routers works via Starlette ordering; still functions, but conventionally add_middleware before include_router.",
+    "No pagination on /api/santri, /api/users, /api/keuangan — fine for current scale (~10 santri) but will not scale to full pondok population."
+  ],
+  "updated_files": ["/app/backend/tests/test_alhasani.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "Admin adib.rofiudin77@guru.smk.belajar.id / Alhasani@2026; Santri 260101016 / 111111; Santri 260401023 / 111111",
+  "seed_data_creation": "Created transient TEST_ santri (TEST{epoch}), TEST pengurus & ustadz user accounts, TEST_ jadwal, TEST_K_ kamar, TEST_U_ ustadz, TEST_kategori keuangan row, 1 syariah payment — all deleted in pytest teardown.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend uses isolated Supabase schema alhasani_test (DB_SCHEMA env). Pytest config pins -n 2 --dist loadscope; the TEST_NIS collision across session fixtures is now tolerated. To run serially use: `cd /app/backend && python -m pytest tests/test_alhasani.py -o addopts='' -v`. Kwitansi URL pattern: /kwitansi/{id_pembayaran}. For Pembayaran UI flow, click [data-testid=pembayaran-santri-{nis}] to open billing grid, then [data-testid=billing-pay-btn-YYYY-M] / [data-testid=billing-override-status-btn-YYYY-M]."
+}

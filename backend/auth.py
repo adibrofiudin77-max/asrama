@@ -81,11 +81,12 @@ async def login(body: LoginIn, request: Request):
     else:
         u = await db.fetchrow("select * from users where lower(email)=$1 and role<>'santri'", ident)
     if not u or not verify_password(body.password, u["password"]):
-        n = (att["attempts"] if att else 0) + 1
+        expired = att and att["locked_until"] and att["locked_until"] <= now
+        n = (att["attempts"] if att and not expired else 0) + 1
         locked = now + timedelta(minutes=15) if n >= 5 else None
         await db.execute(
             "insert into login_attempts (identifier, attempts, locked_until) values ($1,$2,$3) "
-            "on conflict (identifier) do update set attempts=$2, locked_until=$3", key, 0 if locked else n, locked)
+            "on conflict (identifier) do update set attempts=$2, locked_until=$3", key, n, locked)
         raise HTTPException(401, "NIS/Email atau password salah")
     await db.execute("delete from login_attempts where identifier=$1", key)
     return {"token": create_token(u["id"]), "user": public_user(u)}

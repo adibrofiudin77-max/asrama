@@ -49,7 +49,8 @@ def test_santri(admin_headers):
         "status": "aktif", "bayar_pendaftaran": False,
     }
     r = requests.post(f"{API}/santri", json=body, headers=admin_headers, timeout=30)
-    assert r.status_code == 200, f"create santri: {r.status_code} {r.text}"
+    # Tolerate concurrent xdist workers that already created this NIS in a parallel session.
+    assert r.status_code == 200 or (r.status_code == 400 and "sudah terdaftar" in r.text), f"create santri: {r.status_code} {r.text}"
     yield TEST_NIS
     # cleanup
     requests.delete(f"{API}/santri/{TEST_NIS}", headers=admin_headers, timeout=30)

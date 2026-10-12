@@ -18,9 +18,10 @@ Administrator (semua akses), Pengurus (dashboard, santri/pendaftaran, pembayaran
 ## What's been implemented (2026-10-12)
 - All modules above; billing starts 1 month after tanggal_daftar; admin can mark months "dibebaskan"; payments create transaksi_keuangan; top 5 terajin/termalas on dashboard; kenaikan kelas massal (keeps program keahlian, LULUS sets status).
 - UI refresh: white sidebar with pondok logo, simple solid green login, kwitansi without logo.
-- Verified manually: admin & santri login, dashboard, tagihan, kwitansi render. NOT yet tested end-to-end by testing agent (DB holds real data).
+- Verified manually: admin & santri login, dashboard, tagihan, kwitansi render.
+- 2026-10-12: Full E2E test (iteration_1) on isolated Supabase schema `alhasani_test` (copy of real data): backend 27/27, frontend 100%. Test schema dropped afterwards; backend back on `public` (DB_SCHEMA env, default public). Fixed login_attempts counter.
 
 ## Backlog
-- P0: End-to-end testing on a separate test database
+- P0: (done) End-to-end testing on isolated test schema — rerun by setting DB_SCHEMA=alhasani_test in backend/.env and restarting
 - P1: Import/backfill program keahlian for existing santri (currently empty)
 - P2: Export laporan kas to Excel/PDF; WhatsApp reminder tunggakan
