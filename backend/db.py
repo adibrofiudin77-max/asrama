@@ -6,7 +6,12 @@ _pool = None
 
 async def init_pool():
     global _pool
-    _pool = await asyncpg.create_pool(os.environ["DATABASE_URL"], min_size=3, max_size=10)
+    schema = os.environ.get("DB_SCHEMA", "public")
+    conn = await asyncpg.connect(os.environ["DATABASE_URL"])
+    await conn.execute(f'CREATE SCHEMA IF NOT EXISTS "{schema}"')
+    await conn.close()
+    _pool = await asyncpg.create_pool(os.environ["DATABASE_URL"], min_size=3, max_size=10,
+                                      server_settings={"search_path": schema})
 
 
 async def close_pool():
