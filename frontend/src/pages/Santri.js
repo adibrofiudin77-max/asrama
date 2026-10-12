@@ -4,19 +4,21 @@ import { toast } from "sonner";
 import { Plus, Search, Pencil, Trash2, KeyRound, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { api, errMsg, tgl, todayStr } from "@/lib/api";
+import { api, errMsg, tgl, todayStr, TINGKAT, JURUSAN, kelasLabel } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader, Card, Empty, StatusBadge } from "@/components/common";
 import { FormDialog, NativeSelect } from "@/components/FormDialog";
 
-const KELAS_OPTS = ["X", "XI", "XII"].map((k) => ({ value: k, label: k }));
+const TINGKAT_OPTS = TINGKAT.map((k) => ({ value: k, label: `Kelas ${k}` }));
+const JURUSAN_OPTS = JURUSAN.map((k) => ({ value: k, label: k }));
 
 function santriFields(kamar, isEdit) {
   const f = [
     { name: "nis", label: "NIS", required: true, disabled: isEdit },
     { name: "nama", label: "Nama Lengkap", required: true },
     { name: "jenis_kelamin", label: "Jenis Kelamin", type: "select", options: [{ value: "L", label: "Laki-laki" }, { value: "P", label: "Perempuan" }] },
-    { name: "kelas", label: "Kelas", required: true, hint: "Contoh: X, XI, XII" },
+    { name: "kelas", label: "Tingkat Kelas", type: "select", options: TINGKAT_OPTS },
+    { name: "program_keahlian", label: "Program Keahlian", type: "select", placeholder: "- Pilih program keahlian -", options: JURUSAN_OPTS },
     { name: "tempat_lahir", label: "Tempat Lahir" },
     { name: "tanggal_lahir", label: "Tanggal Lahir", type: "date" },
     { name: "id_kamar", label: "Kamar", type: "select", placeholder: "- Pilih kamar -", options: kamar.map((k) => ({ value: k.id_kamar, label: k.nama_kamar })) },
@@ -44,16 +46,16 @@ export default function Santri() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("aktif");
   const [kelas, setKelas] = useState("");
+  const [jurusan, setJurusan] = useState("");
   const [dlg, setDlg] = useState(null);
 
   const load = useCallback(() => {
-    api.get("/santri", { params: { status: status || undefined, kelas: kelas || undefined } }).then((r) => setRows(r.data)).catch((e) => toast.error(errMsg(e)));
-  }, [status, kelas]);
+    api.get("/santri", { params: { status: status || undefined, kelas: kelas || undefined, jurusan: jurusan || undefined } }).then((r) => setRows(r.data)).catch((e) => toast.error(errMsg(e)));
+  }, [status, kelas, jurusan]);
   useEffect(load, [load]);
   useEffect(() => { api.get("/kamar").then((r) => setKamar(r.data)); }, []);
 
   const filtered = useMemo(() => rows.filter((r) => !q || r.nama.toLowerCase().includes(q.toLowerCase()) || r.nis.includes(q)), [rows, q]);
-  const kelasOpts = useMemo(() => [...new Set([...KELAS_OPTS.map((k) => k.value), ...rows.map((r) => r.kelas)])].map((k) => ({ value: k, label: `Kelas ${k}` })), [rows]);
 
   const submit = async (v) => {
     const body = { ...v, id_kamar: v.id_kamar ? Number(v.id_kamar) : null };
@@ -91,7 +93,8 @@ export default function Santri() {
         </div>
         <NativeSelect className="sm:w-44" value={status} onChange={(e) => setStatus(e.target.value)} placeholder="Semua status" data-testid="santri-filter-status"
           options={["aktif", "nonaktif", "lulus"].map((s) => ({ value: s, label: s[0].toUpperCase() + s.slice(1) }))} />
-        <NativeSelect className="sm:w-44" value={kelas} onChange={(e) => setKelas(e.target.value)} placeholder="Semua kelas" options={kelasOpts} data-testid="santri-filter-kelas" />
+        <NativeSelect className="sm:w-44" value={kelas} onChange={(e) => setKelas(e.target.value)} placeholder="Semua tingkat" options={TINGKAT_OPTS} data-testid="santri-filter-kelas" />
+        <NativeSelect className="sm:w-44" value={jurusan} onChange={(e) => setJurusan(e.target.value)} placeholder="Semua program" options={JURUSAN_OPTS} data-testid="santri-filter-jurusan" />
       </Card>
 
       <Card className="overflow-x-auto">
@@ -105,7 +108,7 @@ export default function Santri() {
                 <td className="px-4 py-3 mono text-xs">{s.nis}</td>
                 <td className="px-4 py-3 font-semibold">{s.nama}<p className="text-xs font-normal text-slate-500">{s.no_hp_ortu || ""}</p></td>
                 <td className="px-4 py-3">{s.jenis_kelamin}</td>
-                <td className="px-4 py-3">{s.kelas}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{kelasLabel(s)}</td>
                 <td className="px-4 py-3">{s.nama_kamar || "-"}</td>
                 <td className="px-4 py-3 whitespace-nowrap">{tgl(s.tanggal_daftar)}</td>
                 <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
@@ -130,7 +133,7 @@ export default function Santri() {
         title={dlg?.edit ? `Edit Santri: ${dlg.edit.nama}` : "Pendaftaran Santri Baru"}
         description={dlg?.edit ? null : "Akun santri otomatis dibuat (login NIS, password 111111)."}
         fields={santriFields(kamar, !!dlg?.edit)}
-        initial={dlg?.edit ? { ...dlg.edit, id_kamar: dlg.edit.id_kamar ?? "" } : initialNew}
+        initial={dlg?.edit ? { ...dlg.edit, id_kamar: dlg.edit.id_kamar ?? "", program_keahlian: dlg.edit.program_keahlian ?? "" } : initialNew}
         onSubmit={submit} submitLabel={dlg?.edit ? "Simpan" : "Daftarkan"} />
     </div>
   );

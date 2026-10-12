@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Printer, Moon } from "lucide-react";
+import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { api, errMsg, rupiah, tgl, terbilang } from "@/lib/api";
+import { api, errMsg, rupiah, tgl, terbilang, kelasLabel } from "@/lib/api";
 
 const PAGE_CSS = `
 @page { size: 229mm 162mm; margin: 0; }
@@ -41,10 +41,10 @@ export default function Kwitansi() {
       <div className="kw-sheet relative mx-auto bg-white shadow-xl overflow-hidden text-[3.4mm]" style={{ width: "229mm", height: "162mm", padding: "9mm 12mm" }} data-testid="receipt-container-c5">
         <div className="absolute inset-[4mm] border-[0.6mm] border-emerald-900 pointer-events-none" />
         <div className="absolute inset-[5.2mm] border-[0.2mm] border-amber-600 pointer-events-none" />
-        <Moon className="absolute right-[18mm] top-[42mm] h-[70mm] w-[70mm] text-emerald-900/[0.05] pointer-events-none" />
+        <img src="/logo.png" alt="" className="absolute right-[22mm] top-[40mm] h-[72mm] w-[72mm] opacity-[0.06] pointer-events-none" />
 
         <div className="relative flex items-center gap-[4mm] border-b-[0.6mm] border-double border-emerald-900 pb-[3mm]">
-          <div className="h-[15mm] w-[15mm] rounded-full bg-emerald-900 text-amber-400 grid place-items-center"><Moon className="h-[8mm] w-[8mm]" /></div>
+          <img src="/logo.png" alt="Logo" className="h-[17mm] w-[17mm]" data-testid="receipt-logo" />
           <div className="flex-1">
             <p className="text-[5.4mm] font-extrabold tracking-tight text-emerald-950 leading-tight" data-testid="receipt-header-text">PONDOK PESANTREN ALHASANI LIMPUNG</p>
             <p className="text-[3.2mm] text-slate-600">Jl. KH. Wahid Hasyim No. 01 Limpung</p>
@@ -57,7 +57,7 @@ export default function Kwitansi() {
 
         <div className="relative mt-[4mm]">
           <Row label="Telah terima dari">{p.nama}</Row>
-          <Row label="NIS / Kelas" testId="receipt-santri-nis">{p.nis} / Kelas {p.kelas}{p.nama_kamar ? ` / Kamar ${p.nama_kamar}` : ""}</Row>
+          <Row label="NIS / Kelas" testId="receipt-santri-nis">{p.nis} / Kelas {kelasLabel(p)}{p.nama_kamar ? ` / Kamar ${p.nama_kamar}` : ""}</Row>
           <Row label="Uang sejumlah"><i className="font-semibold">{terbilang(p.nominal)}</i></Row>
           <Row label="Untuk pembayaran">{untuk}{p.keterangan ? ` (${p.keterangan})` : ""}</Row>
         </div>

@@ -3,11 +3,12 @@ import { toast } from "sonner";
 import { ArrowRight, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { api, errMsg, tgl } from "@/lib/api";
+import { api, errMsg, tgl, kelasLabel } from "@/lib/api";
 import { PageHeader, Card, Empty } from "@/components/common";
 import { NativeSelect } from "@/components/FormDialog";
 
 const NEXT = { X: "XI", XI: "XII", XII: "LULUS" };
+const TUJUAN = ["X", "XI", "XII", "LULUS"].map((k) => ({ value: k, label: k === "LULUS" ? "LULUS (status santri jadi lulus)" : `Kelas ${k}` }));
 const y = new Date().getFullYear();
 
 export default function KenaikanKelas() {
@@ -27,17 +28,19 @@ export default function KenaikanKelas() {
   useEffect(loadMeta, [loadMeta]);
   useEffect(() => {
     if (!asal) { setSantri([]); return; }
-    api.get("/santri", { params: { status: "aktif", kelas: asal } }).then((r) => {
+    const [k, j] = asal.split("|");
+    api.get("/santri", { params: { status: "aktif", kelas: k, jurusan: j || "_none" } }).then((r) => {
       setSantri(r.data);
       setChecked(Object.fromEntries(r.data.map((s) => [s.nis, true])));
     });
-    setTujuan(NEXT[asal] || "");
+    setTujuan(NEXT[k] || "");
   }, [asal]);
 
   const selected = santri.filter((s) => checked[s.nis]);
+  const asalLabel = asal.replace("|", " ").trim();
   const run = async () => {
     if (!selected.length || !tujuan) return toast.error("Pilih santri dan kelas tujuan");
-    if (!window.confirm(`Proses ${selected.length} santri dari kelas ${asal} ke ${tujuan}?`)) return;
+    if (!window.confirm(`Proses ${selected.length} santri dari kelas ${asalLabel} ke ${tujuan}?`)) return;
     setBusy(true);
     try {
       const { data } = await api.post("/kenaikan-kelas", { nis_list: selected.map((s) => s.nis), kelas_baru: tujuan, tahun_ajaran: ta });
@@ -52,13 +55,13 @@ export default function KenaikanKelas() {
       <Card className="p-5 mb-6 grid md:grid-cols-[1fr_auto_1fr_1fr_auto] gap-4 items-end">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Kelas Asal</p>
-          <NativeSelect value={asal} onChange={(e) => setAsal(e.target.value)} placeholder="- Pilih kelas -" options={kelas.filter((k) => k.jumlah > 0).map((k) => ({ value: k.kelas, label: `Kelas ${k.kelas} (${k.jumlah} santri)` }))} data-testid="kenaikan-kelas-origin-select" />
+          <NativeSelect value={asal} onChange={(e) => setAsal(e.target.value)} placeholder="- Pilih kelas -" options={kelas.filter((k) => k.jumlah > 0).map((k) => ({ value: `${k.kelas}|${k.program_keahlian || ""}`, label: `Kelas ${kelasLabel(k)} (${k.jumlah} santri)` }))} data-testid="kenaikan-kelas-origin-select" />
         </div>
         <ArrowRight className="hidden md:block h-5 w-5 text-amber-600 mb-2.5" />
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Kelas Tujuan</p>
-          <Input list="kelas-list" value={tujuan} onChange={(e) => setTujuan(e.target.value)} placeholder="XI / XII / LULUS" data-testid="kenaikan-kelas-target-select" />
-          <datalist id="kelas-list">{["X", "XI", "XII", "LULUS"].map((k) => <option key={k} value={k} />)}</datalist>
+          <NativeSelect value={tujuan} onChange={(e) => setTujuan(e.target.value)} placeholder="- Pilih tingkat -" options={TUJUAN} data-testid="kenaikan-kelas-target-select" />
+          <p className="text-[11px] text-slate-500 mt-1">Program keahlian tetap sama</p>
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Tahun Ajaran</p>
@@ -72,7 +75,7 @@ export default function KenaikanKelas() {
       {asal && (
         <Card className="mb-8 overflow-x-auto">
           <div className="flex items-center justify-between p-4 border-b">
-            <p className="text-sm font-semibold">Pratinjau: {selected.length} dari {santri.length} santri kelas {asal} → <span className="text-amber-700">{tujuan || "?"}</span></p>
+            <p className="text-sm font-semibold">Pratinjau: {selected.length} dari {santri.length} santri kelas {asalLabel} → <span className="text-amber-700">{tujuan || "?"}</span></p>
             <label className="text-xs flex items-center gap-2 cursor-pointer">
               <input type="checkbox" className="accent-emerald-700" checked={selected.length === santri.length && santri.length > 0}
                 onChange={(e) => setChecked(Object.fromEntries(santri.map((s) => [s.nis, e.target.checked])))} data-testid="kenaikan-kelas-check-all" /> Pilih semua

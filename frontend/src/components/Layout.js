@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { toast } from "sonner";
-import { LayoutDashboard, Users, Wallet, ClipboardCheck, CalendarClock, GraduationCap, Landmark, BedDouble, ShieldCheck, Home, LogOut, KeyRound, Menu, X, Moon } from "lucide-react";
+import { LayoutDashboard, Users, Wallet, ClipboardCheck, CalendarClock, GraduationCap, Landmark, BedDouble, ShieldCheck, Home, LogOut, KeyRound, Menu, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { api, ROLE_LABEL } from "@/lib/api";
 import { FormDialog } from "@/components/FormDialog";
@@ -26,26 +26,26 @@ const PW_FIELDS = [
 
 function Sidebar({ user, onNavigate }) {
   return (
-    <div className="flex h-full flex-col bg-emerald-950 text-slate-100 islamic-pattern">
-      <div className="px-6 py-7 border-b border-white/10">
+    <div className="flex h-full flex-col bg-white border-r border-slate-200/80 text-slate-700">
+      <div className="px-6 py-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-amber-500 text-emerald-950 grid place-items-center"><Moon className="h-5 w-5" /></div>
+          <img src="/logo.png" alt="Logo Al Hasani" className="h-11 w-11" data-testid="sidebar-logo" />
           <div>
-            <p className="font-extrabold tracking-tight leading-tight">AL-HASANI</p>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-emerald-300">Limpung</p>
+            <p className="font-extrabold tracking-tight leading-tight text-emerald-900">AL HASANI</p>
+            <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Limpung · Batang</p>
           </div>
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-1">
         {NAV.filter((n) => n.roles.includes(user.role)).map((n) => (
           <NavLink key={n.to} to={n.to} onClick={onNavigate} data-testid={`nav-${n.to.slice(1)}`}
-            className={({ isActive }) => `group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${isActive ? "bg-white/10 text-amber-300 shadow-inner" : "text-emerald-100/80 hover:bg-white/5 hover:text-white"}`}>
+            className={({ isActive }) => `group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${isActive ? "bg-emerald-600 text-white shadow-sm shadow-emerald-600/30" : "text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"}`}>
             <n.icon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" /> {n.label}
           </NavLink>
         ))}
       </nav>
-      <div className="p-4 border-t border-white/10 text-xs text-emerald-200/70">
-        <p className="font-semibold text-white text-sm truncate" data-testid="sidebar-user-name">{user.name}</p>
+      <div className="m-3 rounded-xl bg-emerald-50 p-4 text-xs text-emerald-700">
+        <p className="font-semibold text-emerald-950 text-sm truncate" data-testid="sidebar-user-name">{user.name}</p>
         <p data-testid="sidebar-user-role">{ROLE_LABEL[user.role]}</p>
       </div>
     </div>
@@ -58,7 +58,7 @@ export default function Layout() {
   const [pwOpen, setPwOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50/70">
       <aside className="no-print hidden lg:block fixed inset-y-0 left-0 w-64 z-30"><Sidebar user={user} /></aside>
       {mobile && (
         <div className="no-print fixed inset-0 z-50 lg:hidden">

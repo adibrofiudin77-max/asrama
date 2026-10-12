@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Clock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { api, errMsg, rupiah, tgl, HARI } from "@/lib/api";
+import { api, errMsg, rupiah, tgl, HARI, kelasLabel } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { Card, Empty, StatusBadge } from "@/components/common";
 import { PendaftaranCard, TagihanGrid, RiwayatTable } from "@/components/Tagihan";
@@ -11,9 +11,9 @@ function Kehadiran({ k }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3" data-testid="santri-portal-attendance-chart">
-        <Card className="p-4 col-span-2 sm:col-span-1 bg-emerald-950 text-white border-emerald-900">
-          <p className="text-xs uppercase tracking-wider text-emerald-300">Kehadiran</p>
-          <p className="text-3xl font-extrabold text-amber-300 mono" data-testid="portal-persen-hadir">{k.persen}%</p>
+        <Card className="p-4 col-span-2 sm:col-span-1 bg-emerald-600 text-white border-emerald-600">
+          <p className="text-xs uppercase tracking-wider text-emerald-100">Kehadiran</p>
+          <p className="text-3xl font-extrabold text-white mono" data-testid="portal-persen-hadir">{k.persen}%</p>
         </Card>
         {["hadir", "sakit", "izin", "alpha"].map((s) => (
           <Card key={s} className="p-4"><p className="text-xs uppercase tracking-wider text-slate-500 capitalize">{s}</p><p className="text-2xl font-extrabold text-emerald-950">{k.summary[s]}</p></Card>
@@ -55,13 +55,14 @@ export default function Portal() {
 
   return (
     <div>
-      <Card className="p-6 sm:p-8 mb-8 bg-emerald-950 text-white border-emerald-900 islamic-pattern anim-in">
-        <p className="text-xs uppercase tracking-[0.2em] text-amber-300">Assalamu'alaikum</p>
+      <Card className="relative overflow-hidden p-6 sm:p-8 mb-8 bg-emerald-600 text-white border-emerald-600 anim-in">
+        <img src="/logo.png" alt="" className="absolute -right-6 -bottom-8 h-48 w-48 opacity-15 pointer-events-none" />
+        <p className="text-xs uppercase tracking-[0.2em] text-emerald-100">Assalamu'alaikum</p>
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-1" data-testid="portal-santri-nama">{s.nama}</h1>
-        <p className="text-sm text-emerald-200 mt-2">NIS {s.nis} · Kelas {s.kelas} · Kamar {s.nama_kamar || "-"} · Terdaftar {tgl(s.tanggal_daftar)}</p>
+        <p className="text-sm text-emerald-50 mt-2">NIS {s.nis} · Kelas {kelasLabel(s)} · Kamar {s.nama_kamar || "-"} · Terdaftar {tgl(s.tanggal_daftar)}</p>
         <div className="mt-6 flex flex-wrap gap-8">
-          <div><p className="text-xs uppercase tracking-wider text-emerald-300">Total Tagihan</p><p className="text-2xl font-extrabold text-amber-300 mono" data-testid="portal-total-tunggakan">{rupiah(t.total_tunggakan)}</p></div>
-          <div><p className="text-xs uppercase tracking-wider text-emerald-300">Kehadiran Ngaji</p><p className="text-2xl font-extrabold mono">{k.persen}%</p></div>
+          <div><p className="text-xs uppercase tracking-wider text-emerald-100">Total Tagihan</p><p className="text-2xl font-extrabold text-white mono" data-testid="portal-total-tunggakan">{rupiah(t.total_tunggakan)}</p></div>
+          <div><p className="text-xs uppercase tracking-wider text-emerald-100">Kehadiran Ngaji</p><p className="text-2xl font-extrabold mono">{k.persen}%</p></div>
         </div>
       </Card>
 

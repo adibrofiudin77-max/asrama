@@ -11,7 +11,11 @@ router = APIRouter(prefix="/api")
 STAFF = require_roles("admin", "pengurus")
 ADMIN = require_roles("admin")
 FIELDS = ["nama", "tempat_lahir", "tanggal_lahir", "jenis_kelamin", "alamat", "nama_bapak", "nama_ibu",
-          "no_hp_santri", "no_hp_ortu", "kelas", "id_kamar", "tanggal_daftar", "status"]
+          "no_hp_santri", "no_hp_ortu", "kelas", "program_keahlian", "id_kamar", "tanggal_daftar", "status"]
+
+
+def kelas_label(kelas, pk):
+    return f"{kelas} {pk or ''}".strip()
 
 
 class SantriIn(BaseModel):
@@ -25,6 +29,7 @@ class SantriIn(BaseModel):
     no_hp_santri: Optional[str] = None
     no_hp_ortu: Optional[str] = None
     kelas: str = "X"
+    program_keahlian: Optional[str] = None
     id_kamar: Optional[int] = None
     tanggal_daftar: date = Field(default_factory=today_wib)
     status: str = "aktif"
@@ -37,7 +42,8 @@ class SantriCreate(SantriIn):
 
 
 @router.get("/santri")
-async def list_santri(q: Optional[str] = None, status: Optional[str] = None, kelas: Optional[str] = None, user=Depends(STAFF)):
+async def list_santri(q: Optional[str] = None, status: Optional[str] = None, kelas: Optional[str] = None,
+                      jurusan: Optional[str] = None, user=Depends(STAFF)):
     where, args = [], []
     if q:
         args.append(f"%{q.lower()}%")
@@ -48,6 +54,11 @@ async def list_santri(q: Optional[str] = None, status: Optional[str] = None, kel
     if kelas:
         args.append(kelas)
         where.append(f"s.kelas=${len(args)}")
+    if jurusan == "_none":
+        where.append("s.program_keahlian is null")
+    elif jurusan:
+        args.append(jurusan)
+        where.append(f"s.program_keahlian=${len(args)}")
     sql = "select s.*, k.nama_kamar from santri s left join kamar k on k.id_kamar=s.id_kamar"
     sql += (" where " + " and ".join(where)) if where else ""
     return await db.fetch(sql + " order by s.nama", *args)
@@ -107,8 +118,8 @@ async def reset_santri_pw(nis: str, user=Depends(ADMIN)):
 
 @router.get("/kelas")
 async def list_kelas(user=Depends(STAFF)):
-    rows = await db.fetch("select kelas, count(*) filter (where status='aktif') jumlah from santri group by kelas order by kelas")
-    return rows
+    return await db.fetch("select kelas, program_keahlian, count(*) filter (where status='aktif') jumlah from santri "
+                          "group by kelas, program_keahlian order by kelas, program_keahlian nulls first")
 
 
 class KamarIn(BaseModel):
@@ -260,11 +271,12 @@ async def kenaikan(body: KenaikanIn, user=Depends(ADMIN)):
     lulus = baru.upper() == "LULUS"
     n = 0
     for nis in body.nis_list:
-        s = await db.fetchrow("select kelas from santri where nis=$1", nis)
+        s = await db.fetchrow("select kelas, program_keahlian from santri where nis=$1", nis)
         if not s:
             continue
         await db.execute("insert into riwayat_kelas (nis,kelas_lama,kelas_baru,tanggal_naik,tahun_ajaran,keterangan,created_at,updated_at) values ($1,$2,$3,$4,$5,$6,now(),now())",
-                         nis, s["kelas"], "LULUS" if lulus else baru, today_wib(), body.tahun_ajaran, body.keterangan)
+                         nis, kelas_label(s["kelas"], s["program_keahlian"]), "LULUS" if lulus else kelas_label(baru, s["program_keahlian"]),
+                         today_wib(), body.tahun_ajaran, body.keterangan)
         if lulus:
             await db.execute("update santri set status='lulus', updated_at=now() where nis=$1", nis)
         else:

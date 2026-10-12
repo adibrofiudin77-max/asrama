@@ -59,7 +59,7 @@ async def tagihan_overview():
     today, out = today_wib(), []
     for s in santri:
         t = compute_tagihan(s, pays[s["nis"]], exs[s["nis"]], today)
-        out.append({"nis": s["nis"], "nama": s["nama"], "kelas": s["kelas"], "jenis_kelamin": s["jenis_kelamin"],
+        out.append({"nis": s["nis"], "nama": s["nama"], "kelas": s["kelas"], "program_keahlian": s["program_keahlian"], "jenis_kelamin": s["jenis_kelamin"],
                     "nama_kamar": s["nama_kamar"], "bulan_belum": t["bulan_belum"],
                     "pendaftaran_sisa": t["pendaftaran"]["sisa"], "total_tunggakan": t["total_tunggakan"]})
     return out
@@ -159,7 +159,7 @@ async def add_payment(body: BayarIn, user=Depends(STAFF)):
 
 @router.get("/pembayaran")
 async def list_payment(nis: Optional[str] = None, limit: int = 50, user=Depends(STAFF)):
-    q = ("select p.*, s.nama, s.kelas, pg.nama_pengurus from pembayaran p join santri s on s.nis=p.nis "
+    q = ("select p.*, s.nama, s.kelas, s.program_keahlian, pg.nama_pengurus from pembayaran p join santri s on s.nis=p.nis "
          "left join pengurus pg on pg.id_pengurus=p.id_pengurus")
     if nis:
         return await db.fetch(q + " where p.nis=$1 order by p.id_pembayaran desc limit $2", nis, limit)
@@ -169,7 +169,7 @@ async def list_payment(nis: Optional[str] = None, limit: int = 50, user=Depends(
 @router.get("/pembayaran/{pid}")
 async def get_payment(pid: int, user=Depends(require_roles("admin", "pengurus", "santri"))):
     p = await db.fetchrow(
-        "select p.*, s.nama, s.kelas, s.alamat, s.jenis_kelamin, k.nama_kamar, pg.nama_pengurus from pembayaran p join santri s on s.nis=p.nis "
+        "select p.*, s.nama, s.kelas, s.program_keahlian, s.alamat, s.jenis_kelamin, k.nama_kamar, pg.nama_pengurus from pembayaran p join santri s on s.nis=p.nis "
         "left join kamar k on k.id_kamar=s.id_kamar left join pengurus pg on pg.id_pengurus=p.id_pengurus where p.id_pembayaran=$1", pid)
     if not p or (user["role"] == "santri" and p["nis"] != user["nis"]):
         raise HTTPException(404, "Pembayaran tidak ditemukan")

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS santri (
   no_hp_santri varchar(20), no_hp_ortu varchar(20), kelas varchar(50) NOT NULL DEFAULT 'X',
   id_kamar bigint REFERENCES kamar(id_kamar) ON DELETE SET NULL, tanggal_daftar date NOT NULL DEFAULT CURRENT_DATE,
   status varchar(20) NOT NULL DEFAULT 'aktif', created_at timestamptz, updated_at timestamptz);
+ALTER TABLE santri ADD COLUMN IF NOT EXISTS program_keahlian varchar(20);
 CREATE TABLE IF NOT EXISTS users (
   id bigserial PRIMARY KEY, name varchar(255) NOT NULL, email varchar(255) NOT NULL UNIQUE, email_verified_at timestamptz,
   password varchar(255) NOT NULL, role varchar(30) NOT NULL DEFAULT 'santri', nis varchar(255), id_ustadz bigint, id_pengurus bigint,

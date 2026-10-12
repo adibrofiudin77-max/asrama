@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Moon, UserCog, GraduationCap, Info } from "lucide-react";
+import { UserCog, GraduationCap, Info, ClipboardCheck, Wallet, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -36,30 +36,34 @@ export default function Login() {
   );
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-[1.1fr_1fr] bg-slate-50">
-      <div className="relative hidden lg:block overflow-hidden">
-        <img src="/login-bg.jpg" alt="Masjid" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-emerald-950/80" />
-        <div className="absolute inset-0 islamic-pattern opacity-60" />
-        <div className="relative z-10 flex h-full flex-col justify-between p-12 text-white">
+    <div className="min-h-screen grid lg:grid-cols-[1.1fr_1fr] bg-white">
+      <div className="relative hidden lg:flex m-4 rounded-3xl bg-emerald-600 overflow-hidden">
+        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-emerald-500" />
+        <div className="absolute -left-16 -bottom-28 h-96 w-96 rounded-full bg-emerald-700" />
+        <div className="relative z-10 flex h-full w-full flex-col justify-between p-12 text-white">
           <div className="flex items-center gap-3 anim-in">
-            <div className="h-11 w-11 rounded-lg bg-amber-500 text-emerald-950 grid place-items-center"><Moon className="h-5 w-5" /></div>
-            <span className="font-extrabold tracking-tight text-lg">AL-HASANI LIMPUNG</span>
+            <img src="/logo.png" alt="Logo Al Hasani" className="h-12 w-12 rounded-full bg-white p-0.5" />
+            <span className="font-extrabold tracking-tight text-lg">AL HASANI LIMPUNG</span>
           </div>
           <div className="max-w-lg anim-in-2">
-            <p className="font-['Amiri'] text-4xl text-amber-300 mb-6" dir="rtl">طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ</p>
-            <h1 className="text-4xl xl:text-5xl font-extrabold tracking-tight leading-tight">Sistem Manajemen Pondok Pesantren Alhasani</h1>
-            <p className="mt-4 text-emerald-100/80">Absensi ngaji, tagihan syariah bulanan, pendaftaran santri, dan kas pondok dalam satu tempat.</p>
+            <img src="/logo.png" alt="Logo Pondok" className="h-36 w-36 mb-8 drop-shadow-xl" data-testid="login-logo" />
+            <h1 className="text-4xl xl:text-5xl font-extrabold tracking-tight leading-tight">Sistem Manajemen Pondok Pesantren Al Hasani</h1>
+            <p className="mt-4 text-emerald-50/90">Absensi ngaji, tagihan syariah bulanan, pendaftaran santri, dan kas pondok dalam satu tempat.</p>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {[[ClipboardCheck, "Absensi"], [Wallet, "Pembayaran"], [Users, "Data Santri"]].map(([I, l]) => (
+                <span key={l} className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur"><I className="h-3.5 w-3.5" />{l}</span>
+              ))}
+            </div>
           </div>
-          <p className="text-xs text-emerald-200/60">Jl. KH. Wahid Hasyim No. 01 Limpung</p>
+          <p className="text-xs text-emerald-50/70">Jl. KH. Wahid Hasyim No. 01 Limpung</p>
         </div>
       </div>
 
       <div className="flex items-center justify-center p-6 sm:p-12">
         <form onSubmit={submit} className="w-full max-w-md anim-in-3" data-testid="login-form">
           <div className="lg:hidden flex items-center gap-3 mb-10">
-            <div className="h-10 w-10 rounded-lg bg-emerald-900 text-amber-400 grid place-items-center"><Moon className="h-5 w-5" /></div>
-            <span className="font-extrabold tracking-tight text-emerald-950">AL-HASANI LIMPUNG</span>
+            <img src="/logo.png" alt="Logo" className="h-12 w-12" />
+            <span className="font-extrabold tracking-tight text-emerald-950">AL HASANI LIMPUNG</span>
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-emerald-950">Masuk</h2>
           <p className="text-sm text-slate-500 mt-1 mb-8">Pilih jenis akun Anda untuk melanjutkan.</p>
@@ -86,7 +90,7 @@ export default function Login() {
                 <Info className="h-4 w-4 shrink-0" /> Password awal santri adalah <b className="mono">111111</b>. Segera ganti setelah masuk.
               </div>
             )}
-            <Button type="submit" disabled={busy} className="w-full h-11 bg-emerald-800 hover:bg-emerald-900 text-base" data-testid="login-submit-button">
+            <Button type="submit" disabled={busy} className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-base rounded-xl" data-testid="login-submit-button">
               {busy ? "Memproses..." : "Masuk"}
             </Button>
           </div>

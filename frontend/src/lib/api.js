@@ -60,4 +60,8 @@ export const terbilang = (n) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
+export const TINGKAT = ["X", "XI", "XII"];
+export const JURUSAN = ["PM", "AK", "TO", "PPLG", "PG", "RPL", "BD", "BR", "LP"];
+export const kelasLabel = (s) => [s?.kelas, s?.program_keahlian].filter(Boolean).join(" ");
+
 export const ROLE_LABEL = { admin: "Administrator", pengurus: "Pengurus", ustadz: "Ustadz", santri: "Santri" };

@@ -59,7 +59,7 @@ async def del_jadwal(jid: int, user=Depends(STAFF)):
 @router.get("/absensi")
 async def get_absensi(tanggal: date, id_jadwal: int, user=Depends(ABSEN)):
     return await db.fetch(
-        "select s.nis, s.nama, s.kelas, s.jenis_kelamin, k.status, k.keterangan from santri s "
+        "select s.nis, s.nama, s.kelas, s.program_keahlian, s.jenis_kelamin, k.status, k.keterangan from santri s "
         "left join kehadiran k on k.nis=s.nis and k.tanggal=$1 and k.id_jadwal=$2 where s.status='aktif' order by s.jenis_kelamin, s.nama",
         tanggal, id_jadwal)
 
@@ -102,7 +102,7 @@ async def rekap_kehadiran(dari: Optional[date] = None, sampai: Optional[date] = 
         args.append(sampai)
         cond += f" and k.tanggal <= ${len(args)}"
     rows = await db.fetch(
-        "select s.nis, s.nama, s.kelas, s.jenis_kelamin, count(k.id_kehadiran) total, "
+        "select s.nis, s.nama, s.kelas, s.program_keahlian, s.jenis_kelamin, count(k.id_kehadiran) total, "
         "count(*) filter (where k.status='hadir') hadir, count(*) filter (where k.status='sakit') sakit, "
         "count(*) filter (where k.status='izin') izin, count(*) filter (where k.status='alpha') alpha "
         f"from santri s left join kehadiran k on k.nis=s.nis {cond} where s.status='aktif' group by s.nis order by s.nama", *args)

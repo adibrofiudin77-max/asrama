@@ -4,7 +4,7 @@ import { Save, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { api, errMsg, todayStr, firstOfMonthStr } from "@/lib/api";
+import { api, errMsg, todayStr, firstOfMonthStr, kelasLabel } from "@/lib/api";
 import { PageHeader, Card, Empty } from "@/components/common";
 import { NativeSelect } from "@/components/FormDialog";
 
@@ -74,7 +74,7 @@ function InputAbsensi({ jadwal }) {
               {rows.map((r, i) => (
                 <tr key={r.nis} data-testid={`absensi-row-${r.nis}`}>
                   <td className="px-4 py-2.5 text-slate-400">{i + 1}</td>
-                  <td className="px-4 py-2.5"><p className="font-semibold">{r.nama}</p><p className="text-xs text-slate-500">{r.nis} · {r.jenis_kelamin} · Kelas {r.kelas}</p></td>
+                  <td className="px-4 py-2.5"><p className="font-semibold">{r.nama}</p><p className="text-xs text-slate-500">{r.nis} · {r.jenis_kelamin} · Kelas {kelasLabel(r)}</p></td>
                   <td className="px-4 py-2.5">
                     <div className="flex gap-1">
                       {ST.map((s) => (
@@ -115,7 +115,7 @@ function Rekap() {
           <tbody className="divide-y divide-slate-100">
             {rows.map((r) => (
               <tr key={r.nis}>
-                <td className="px-4 py-2.5 font-semibold">{r.nama}</td><td className="px-4 py-2.5">{r.kelas}</td>
+                <td className="px-4 py-2.5 font-semibold">{r.nama}</td><td className="px-4 py-2.5 whitespace-nowrap">{kelasLabel(r)}</td>
                 <td className="px-4 py-2.5 text-center text-green-700">{r.hadir}</td><td className="px-4 py-2.5 text-center text-yellow-700">{r.sakit}</td>
                 <td className="px-4 py-2.5 text-center text-blue-700">{r.izin}</td><td className="px-4 py-2.5 text-center text-red-700">{r.alpha}</td>
                 <td className="px-4 py-2.5 text-right font-bold mono">{r.total ? `${r.persen}%` : "-"}</td>

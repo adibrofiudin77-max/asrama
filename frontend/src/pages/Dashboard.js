@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Users, UserCheck, Wallet, AlertTriangle, Landmark, Trophy, TrendingDown } from "lucide-react";
-import { api, rupiah, tgl, errMsg } from "@/lib/api";
+import { api, rupiah, tgl, errMsg, kelasLabel } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader, Card, Empty } from "@/components/common";
 import { toast } from "sonner";
@@ -39,7 +39,7 @@ function TopList({ title, icon: Icon, items, tone, testId }) {
                 <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 overflow-hidden">
                   <div className={`h-full rounded-full ${good ? "bg-emerald-600" : "bg-red-500"}`} style={{ width: `${s.persen}%` }} />
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1">Kelas {s.kelas} · H {s.hadir} · S {s.sakit} · I {s.izin} · A {s.alpha}</p>
+                <p className="text-[11px] text-slate-500 mt-1">Kelas {kelasLabel(s)} · H {s.hadir} · S {s.sakit} · I {s.izin} · A {s.alpha}</p>
               </div>
             </li>
           ))}

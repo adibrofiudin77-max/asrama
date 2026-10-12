@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Search, CreditCard } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { api, errMsg, rupiah, BULAN, todayStr } from "@/lib/api";
+import { api, errMsg, rupiah, BULAN, todayStr, kelasLabel } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { PageHeader, Card, Empty } from "@/components/common";
 import { FormDialog } from "@/components/FormDialog";
@@ -73,13 +73,13 @@ export default function Pembayaran() {
           <div className="max-h-[60vh] overflow-y-auto -mx-2">
             {filtered.map((s) => (
               <button key={s.nis} onClick={() => setParams({ nis: s.nis })} data-testid={`pembayaran-santri-${s.nis}`}
-                className={`w-full text-left rounded-lg px-3 py-2.5 transition-colors ${sel === s.nis ? "bg-emerald-900 text-white" : "hover:bg-slate-50"}`}>
+                className={`w-full text-left rounded-lg px-3 py-2.5 transition-colors ${sel === s.nis ? "bg-emerald-600 text-white" : "hover:bg-slate-50"}`}>
                 <div className="flex justify-between gap-2">
                   <p className="text-sm font-semibold truncate">{s.nama}</p>
                   {s.total_tunggakan > 0 ? <span className={`text-xs font-bold mono ${sel === s.nis ? "text-amber-300" : "text-red-600"}`}>{rupiah(s.total_tunggakan)}</span>
                     : <span className={`text-xs font-semibold ${sel === s.nis ? "text-emerald-200" : "text-green-600"}`}>Lunas</span>}
                 </div>
-                <p className={`text-xs ${sel === s.nis ? "text-emerald-200" : "text-slate-500"}`}>{s.nis} · Kelas {s.kelas}{s.bulan_belum ? ` · ${s.bulan_belum} bln belum` : ""}</p>
+                <p className={`text-xs ${sel === s.nis ? "text-emerald-200" : "text-slate-500"}`}>{s.nis} · Kelas {kelasLabel(s)}{s.bulan_belum ? ` · ${s.bulan_belum} bln belum` : ""}</p>
               </button>
             ))}
             {filtered.length === 0 && <Empty text="Tidak ada santri" />}
@@ -89,17 +89,17 @@ export default function Pembayaran() {
         <div className="space-y-6 min-w-0">
           {!detail ? <Card className="p-10"><Empty text="Pilih santri di sebelah kiri untuk melihat tagihan" /></Card> : (
             <>
-              <Card className="p-6 bg-emerald-950 text-white border-emerald-900 islamic-pattern">
+              <Card className="p-6 bg-emerald-600 text-white border-emerald-600">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-amber-300">{detail.santri.nis}</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-emerald-100">{detail.santri.nis}</p>
                     <h2 className="text-2xl font-extrabold" data-testid="pembayaran-santri-nama">{detail.santri.nama}</h2>
-                    <p className="text-sm text-emerald-200">Kelas {detail.santri.kelas} · Kamar {detail.santri.nama_kamar || "-"} · Daftar {detail.santri.tanggal_daftar}</p>
+                    <p className="text-sm text-emerald-50">Kelas {kelasLabel(detail.santri)} · Kamar {detail.santri.nama_kamar || "-"} · Daftar {detail.santri.tanggal_daftar}</p>
                   </div>
                   <div className="sm:text-right">
-                    <p className="text-xs uppercase tracking-wider text-emerald-300">Total Tunggakan</p>
-                    <p className="text-2xl font-extrabold text-amber-300 mono" data-testid="pembayaran-total-tunggakan">{rupiah(detail.total_tunggakan)}</p>
-                    <Button size="sm" className="mt-2 bg-amber-500 hover:bg-amber-600 text-emerald-950" data-testid="pembayaran-input-btn"
+                    <p className="text-xs uppercase tracking-wider text-emerald-100">Total Tunggakan</p>
+                    <p className="text-2xl font-extrabold text-white mono" data-testid="pembayaran-total-tunggakan">{rupiah(detail.total_tunggakan)}</p>
+                    <Button size="sm" className="mt-2 bg-white hover:bg-emerald-50 text-emerald-700" data-testid="pembayaran-input-btn"
                       onClick={() => setPay({ jenis: "syariah", tanggal_bayar: todayStr(), bulan: new Date().getMonth() + 1, tahun: new Date().getFullYear(), nominal: 100000 })}>
                       <CreditCard className="h-4 w-4 mr-1" /> Input Pembayaran
                     </Button>
