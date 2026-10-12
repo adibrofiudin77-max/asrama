@@ -41,10 +41,8 @@ export default function Kwitansi() {
       <div className="kw-sheet relative mx-auto bg-white shadow-xl overflow-hidden text-[3.4mm]" style={{ width: "229mm", height: "162mm", padding: "9mm 12mm" }} data-testid="receipt-container-c5">
         <div className="absolute inset-[4mm] border-[0.6mm] border-emerald-900 pointer-events-none" />
         <div className="absolute inset-[5.2mm] border-[0.2mm] border-amber-600 pointer-events-none" />
-        <img src="/logo.png" alt="" className="absolute right-[22mm] top-[40mm] h-[72mm] w-[72mm] opacity-[0.06] pointer-events-none" />
 
         <div className="relative flex items-center gap-[4mm] border-b-[0.6mm] border-double border-emerald-900 pb-[3mm]">
-          <img src="/logo.png" alt="Logo" className="h-[17mm] w-[17mm]" data-testid="receipt-logo" />
           <div className="flex-1">
             <p className="text-[5.4mm] font-extrabold tracking-tight text-emerald-950 leading-tight" data-testid="receipt-header-text">PONDOK PESANTREN ALHASANI LIMPUNG</p>
             <p className="text-[3.2mm] text-slate-600">Jl. KH. Wahid Hasyim No. 01 Limpung</p>
