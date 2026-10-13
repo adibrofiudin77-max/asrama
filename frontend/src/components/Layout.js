@@ -5,6 +5,7 @@ import { LayoutDashboard, Users, Wallet, ClipboardCheck, CalendarClock, Graduati
 import { useAuth } from "@/context/AuthContext";
 import { api, ROLE_LABEL } from "@/lib/api";
 import { FormDialog } from "@/components/FormDialog";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "pengurus"] },
@@ -80,6 +81,7 @@ export default function Layout() {
             </button>
             <p className="hidden sm:block text-sm text-slate-500">Assalamu'alaikum, <span className="font-semibold text-emerald-900">{user.name}</span></p>
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               <button onClick={() => setPwOpen(true)} data-testid="change-password-btn" className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-amber-50 hover:text-emerald-900 transition-colors">
                 <KeyRound className="h-4 w-4" /> <span className="hidden sm:inline">Ganti Password</span>
               </button>

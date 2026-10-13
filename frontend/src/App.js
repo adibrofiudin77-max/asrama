@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth, HOME } from "@/context/AuthContext";
 import Layout from "@/components/Layout";
@@ -15,6 +16,7 @@ import Master from "@/pages/Master";
 import Pengguna from "@/pages/Pengguna";
 import Portal from "@/pages/Portal";
 import "@/App.css";
+import "@/dark.css";
 
 function Guard({ roles, children }) {
   const { user } = useAuth();
@@ -31,10 +33,21 @@ function Root() {
 
 const A = ["admin"], S = ["admin", "pengurus"];
 
+function ThemeShell({ children }) {
+  const { pathname } = useLocation();
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="alh_theme" disableTransitionOnChange
+      forcedTheme={pathname.startsWith("/kwitansi") ? "light" : undefined}>
+      {children}
+    </ThemeProvider>
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ThemeShell>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/kwitansi/:id" element={<Guard roles={["admin", "pengurus", "santri"]}><Kwitansi /></Guard>} />
@@ -53,8 +66,9 @@ export default function App() {
           </Route>
           <Route path="*" element={<Root />} />
         </Routes>
+        <Toaster richColors position="top-right" />
+        </ThemeShell>
       </BrowserRouter>
-      <Toaster richColors position="top-right" />
     </AuthProvider>
   );
 }

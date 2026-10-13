@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 const STYLES = {
   hadir: "bg-green-50 text-green-700 ring-green-600/20",
   lunas: "bg-green-50 text-green-700 ring-green-600/20",
@@ -38,7 +40,7 @@ export function PageHeader({ title, subtitle, children }) {
 }
 
 export function Card({ className = "", children, ...p }) {
-  return <div className={`bg-white border border-amber-900/10 shadow-[0_1px_2px_rgba(4,35,26,0.04),0_8px_24px_-12px_rgba(4,35,26,0.12)] rounded-xl ${className}`} {...p}>{children}</div>;
+  return <div className={cn("bg-white border border-amber-900/10 shadow-[0_1px_2px_rgba(4,35,26,0.04),0_8px_24px_-12px_rgba(4,35,26,0.12)] rounded-xl", className)} {...p}>{children}</div>;
 }
 
 export function Empty({ text = "Belum ada data" }) {
