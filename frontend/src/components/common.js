@@ -26,8 +26,10 @@ export function PageHeader({ title, subtitle, children }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-8 anim-in">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-600 mb-1">Pondok Pesantren Alhasani</p>
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-emerald-950">{title}</h1>
+        <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-600 mb-2">
+          <span className="h-px w-6 bg-amber-500" /> Pondok Pesantren Alhasani
+        </p>
+        <h1 className="font-display text-4xl sm:text-5xl font-bold leading-none text-emerald-950">{title}</h1>
         {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
       </div>
       {children && <div className="flex flex-wrap gap-2 no-print">{children}</div>}
@@ -36,7 +38,7 @@ export function PageHeader({ title, subtitle, children }) {
 }
 
 export function Card({ className = "", children, ...p }) {
-  return <div className={`bg-white border border-slate-200/80 shadow-sm rounded-xl ${className}`} {...p}>{children}</div>;
+  return <div className={`bg-white border border-amber-900/10 shadow-[0_1px_2px_rgba(4,35,26,0.04),0_8px_24px_-12px_rgba(4,35,26,0.12)] rounded-xl ${className}`} {...p}>{children}</div>;
 }
 
 export function Empty({ text = "Belum ada data" }) {

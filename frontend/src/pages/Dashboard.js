@@ -7,10 +7,10 @@ import { PageHeader, Card, Empty } from "@/components/common";
 import { toast } from "sonner";
 
 function Stat({ icon: Icon, label, value, sub, testId, accent = "emerald" }) {
-  const c = accent === "amber" ? "bg-amber-100 text-amber-700" : accent === "red" ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-700";
+  const c = accent === "amber" ? "gold-fill text-emerald-950" : accent === "red" ? "bg-red-50 text-red-600" : "bg-emerald-900 text-amber-300";
   return (
     <Card className="p-5 hover:-translate-y-0.5 transition-transform duration-200">
-      <div className={`h-9 w-9 rounded-lg grid place-items-center ${c}`}><Icon className="h-4 w-4" /></div>
+      <div className={`h-10 w-10 rounded-lg grid place-items-center shadow-sm ${c}`}><Icon className="h-4 w-4" /></div>
       <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</p>
       <p className="mt-1 text-2xl font-extrabold text-emerald-950" data-testid={testId}>{value}</p>
       {sub && <p className="text-xs text-slate-500 mt-0.5">{sub}</p>}
@@ -30,14 +30,14 @@ function TopList({ title, icon: Icon, items, tone, testId }) {
         <ol className="space-y-4">
           {items.map((s, i) => (
             <li key={s.nis} className="flex items-center gap-4" data-testid={`${testId}-item-${i}`}>
-              <span className={`h-8 w-8 shrink-0 rounded-full grid place-items-center text-sm font-bold ${good ? (i === 0 ? "bg-amber-500 text-white" : "bg-emerald-50 text-emerald-800") : "bg-red-50 text-red-700"}`}>{i + 1}</span>
+              <span className={`h-8 w-8 shrink-0 rounded-full grid place-items-center text-sm font-bold ${good ? (i === 0 ? "gold-fill text-emerald-950 shadow-md shadow-amber-500/40" : "bg-emerald-50 text-emerald-800 ring-1 ring-amber-300/60") : "bg-red-50 text-red-700"}`}>{i + 1}</span>
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between gap-2">
                   <p className="font-semibold text-sm truncate">{s.nama}</p>
                   <p className={`text-sm font-bold mono ${good ? "text-emerald-700" : "text-red-600"}`}>{s.persen}%</p>
                 </div>
                 <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                  <div className={`h-full rounded-full ${good ? "bg-emerald-600" : "bg-red-500"}`} style={{ width: `${s.persen}%` }} />
+                  <div className={`h-full rounded-full ${good ? "bg-gradient-to-r from-emerald-700 to-amber-500" : "bg-red-500"}`} style={{ width: `${s.persen}%` }} />
                 </div>
                 <p className="text-[11px] text-slate-500 mt-1">Kelas {kelasLabel(s)} · H {s.hadir} · S {s.sakit} · I {s.izin} · A {s.alpha}</p>
               </div>
@@ -64,10 +64,10 @@ export default function Dashboard() {
   return (
     <div>
       <PageHeader title="Dashboard" subtitle={`Ringkasan pondok · ${tgl(new Date().toISOString())}`}>
-        <div className="flex gap-1 rounded-lg bg-slate-200/70 p-1">
+        <div className="flex gap-1 rounded-lg bg-white ring-1 ring-amber-900/10 p-1">
           {[["bulan", "Bulan Ini"], ["semua", "Semua Waktu"]].map(([k, l]) => (
             <button key={k} onClick={() => setPeriode(k)} data-testid={`dashboard-periode-${k}`}
-              className={`rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${periode === k ? "bg-white text-emerald-900 shadow-sm" : "text-slate-500"}`}>{l}</button>
+              className={`rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${periode === k ? "bg-emerald-900 text-amber-200 shadow-sm" : "text-slate-500 hover:text-emerald-900"}`}>{l}</button>
           ))}
         </div>
       </PageHeader>

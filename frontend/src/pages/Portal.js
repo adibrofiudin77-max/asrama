@@ -11,8 +11,8 @@ function Kehadiran({ k }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3" data-testid="santri-portal-attendance-chart">
-        <Card className="p-4 col-span-2 sm:col-span-1 bg-emerald-600 text-white border-emerald-600">
-          <p className="text-xs uppercase tracking-wider text-emerald-100">Kehadiran</p>
+        <Card className="p-4 col-span-2 sm:col-span-1 bg-emerald-900 text-white border-amber-500/30">
+          <p className="text-xs uppercase tracking-wider text-amber-300">Kehadiran</p>
           <p className="text-3xl font-extrabold text-white mono" data-testid="portal-persen-hadir">{k.persen}%</p>
         </Card>
         {["hadir", "sakit", "izin", "alpha"].map((s) => (
@@ -55,10 +55,10 @@ export default function Portal() {
 
   return (
     <div>
-      <Card className="relative overflow-hidden p-6 sm:p-8 mb-8 bg-emerald-600 text-white border-emerald-600 anim-in">
-        <img src="/logo.png" alt="" className="absolute -right-6 -bottom-8 h-48 w-48 opacity-15 pointer-events-none" />
-        <p className="text-xs uppercase tracking-[0.2em] text-emerald-100">Assalamu'alaikum</p>
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-1" data-testid="portal-santri-nama">{s.nama}</h1>
+      <Card className="lux-dark relative overflow-hidden p-6 sm:p-8 mb-8 text-white border-amber-500/30 anim-in">
+        <img src="/logo.png" alt="" className="absolute -right-6 -bottom-8 h-48 w-48 opacity-10 pointer-events-none" />
+        <p className="text-xs uppercase tracking-[0.3em] text-amber-300/90">Assalamu'alaikum</p>
+        <h1 className="font-display text-4xl sm:text-5xl font-bold leading-tight mt-1 text-gold" data-testid="portal-santri-nama">{s.nama}</h1>
         <p className="text-sm text-emerald-50 mt-2">NIS {s.nis} · Kelas {kelasLabel(s)} · Kamar {s.nama_kamar || "-"} · Terdaftar {tgl(s.tanggal_daftar)}</p>
         <div className="mt-6 flex flex-wrap gap-8">
           <div><p className="text-xs uppercase tracking-wider text-emerald-100">Total Tagihan</p><p className="text-2xl font-extrabold text-white mono" data-testid="portal-total-tunggakan">{rupiah(t.total_tunggakan)}</p></div>

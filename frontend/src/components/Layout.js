@@ -26,27 +26,33 @@ const PW_FIELDS = [
 
 function Sidebar({ user, onNavigate }) {
   return (
-    <div className="flex h-full flex-col bg-white border-r border-slate-200/80 text-slate-700">
-      <div className="px-6 py-6">
+    <div className="lux-dark relative flex h-full flex-col border-r border-amber-500/20 text-emerald-50">
+      <div className="px-6 pt-7 pb-6">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Logo Al Hasani" className="h-11 w-11" data-testid="sidebar-logo" />
+          <div className="rounded-full bg-white p-1 ring-2 ring-amber-400/70 shadow-lg shadow-black/30">
+            <img src="/logo.png" alt="Logo Al Hasani" className="h-10 w-10" data-testid="sidebar-logo" />
+          </div>
           <div>
-            <p className="font-extrabold tracking-tight leading-tight text-emerald-900">AL HASANI</p>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Limpung · Batang</p>
+            <p className="font-display text-2xl font-bold leading-none text-gold">Al Hasani</p>
+            <p className="mt-1 text-[10px] uppercase tracking-[0.3em] text-emerald-100/50">Limpung · Batang</p>
           </div>
         </div>
+        <div className="gold-hairline mt-6 opacity-60" />
       </div>
-      <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-1">
+      <nav className="flex-1 overflow-y-auto px-3 pb-5 space-y-1">
         {NAV.filter((n) => n.roles.includes(user.role)).map((n) => (
           <NavLink key={n.to} to={n.to} onClick={onNavigate} data-testid={`nav-${n.to.slice(1)}`}
-            className={({ isActive }) => `group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${isActive ? "bg-emerald-600 text-white shadow-sm shadow-emerald-600/30" : "text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"}`}>
-            <n.icon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" /> {n.label}
+            className={({ isActive }) => `group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${isActive ? "bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/25" : "text-emerald-100/70 hover:bg-white/5 hover:text-amber-200"}`}>
+            {({ isActive }) => (<>
+              {isActive && <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r gold-fill" />}
+              <n.icon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" /> {n.label}
+            </>)}
           </NavLink>
         ))}
       </nav>
-      <div className="m-3 rounded-xl bg-emerald-50 p-4 text-xs text-emerald-700">
-        <p className="font-semibold text-emerald-950 text-sm truncate" data-testid="sidebar-user-name">{user.name}</p>
-        <p data-testid="sidebar-user-role">{ROLE_LABEL[user.role]}</p>
+      <div className="m-3 rounded-xl border border-amber-400/20 bg-white/[0.04] p-4 text-xs text-amber-200/80">
+        <p className="font-semibold text-white text-sm truncate" data-testid="sidebar-user-name">{user.name}</p>
+        <p className="mt-0.5 uppercase tracking-wider text-[10px]" data-testid="sidebar-user-role">{ROLE_LABEL[user.role]}</p>
       </div>
     </div>
   );
@@ -58,7 +64,7 @@ export default function Layout() {
   const [pwOpen, setPwOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50/70">
+    <div className="min-h-screen bg-ivory">
       <aside className="no-print hidden lg:block fixed inset-y-0 left-0 w-64 z-30"><Sidebar user={user} /></aside>
       {mobile && (
         <div className="no-print fixed inset-0 z-50 lg:hidden">
@@ -67,14 +73,14 @@ export default function Layout() {
         </div>
       )}
       <div className="lg:pl-64 print:pl-0">
-        <header className="no-print sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+        <header className="no-print sticky top-0 z-40 bg-white/80 backdrop-blur-xl">
           <div className="flex h-16 items-center justify-between px-4 sm:px-8">
-            <button className="lg:hidden p-2 rounded-md hover:bg-slate-100" onClick={() => setMobile(!mobile)} data-testid="mobile-menu-btn">
+            <button className="lg:hidden p-2 rounded-md hover:bg-amber-50" onClick={() => setMobile(!mobile)} data-testid="mobile-menu-btn">
               {mobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
             <p className="hidden sm:block text-sm text-slate-500">Assalamu'alaikum, <span className="font-semibold text-emerald-900">{user.name}</span></p>
             <div className="flex items-center gap-2">
-              <button onClick={() => setPwOpen(true)} data-testid="change-password-btn" className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-slate-100 transition-colors">
+              <button onClick={() => setPwOpen(true)} data-testid="change-password-btn" className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-amber-50 hover:text-emerald-900 transition-colors">
                 <KeyRound className="h-4 w-4" /> <span className="hidden sm:inline">Ganti Password</span>
               </button>
               <button onClick={logout} data-testid="logout-btn" className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
@@ -82,6 +88,7 @@ export default function Layout() {
               </button>
             </div>
           </div>
+          <div className="gold-hairline opacity-70" />
         </header>
         <main className="px-4 py-8 sm:px-8 lg:px-10 max-w-[1400px] print:p-0"><Outlet /></main>
       </div>

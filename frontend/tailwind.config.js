@@ -14,7 +14,23 @@ module.exports = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
       },
+      fontFamily: {
+        display: ['"Cormorant Garamond"', 'serif']
+      },
       colors: {
+        emerald: {
+          50: '#EEF6F2', 100: '#D5EADF', 200: '#ABD5C0', 300: '#76B99A', 400: '#409973', 500: '#1F7D58',
+          600: '#126948', 700: '#0D573C', 800: '#0A4631', 900: '#083A29', 950: '#04231A'
+        },
+        amber: {
+          50: '#FBF8EF', 100: '#F6EDD3', 200: '#EDDBA6', 300: '#E2C677', 400: '#D9B95B', 500: '#C9A23F',
+          600: '#AD8730', 700: '#8A6A26', 800: '#6C5320', 900: '#58441D', 950: '#33270F'
+        },
+        gold: {
+          50: '#FBF8EF', 100: '#F6EDD3', 200: '#EDDBA6', 300: '#E2C677', 400: '#D9B95B', 500: '#C9A23F',
+          600: '#AD8730', 700: '#8A6A26', 800: '#6C5320', 900: '#58441D', 950: '#33270F'
+        },
+        ivory: '#F8F6F0',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

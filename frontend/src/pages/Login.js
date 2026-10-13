@@ -30,24 +30,27 @@ export default function Login() {
 
   const tab = (m, Icon, label) => (
     <button type="button" onClick={() => { setMode(m); setIdentifier(""); }} data-testid={`login-tab-${m}`}
-      className={`flex-1 flex items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold transition-colors duration-200 ${mode === m ? "bg-white text-emerald-900 shadow-sm" : "text-slate-500 hover:text-emerald-800"}`}>
+      className={`flex-1 flex items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold transition-colors duration-200 ${mode === m ? "bg-emerald-900 text-amber-200 shadow-sm" : "text-slate-500 hover:text-emerald-800"}`}>
       <Icon className="h-4 w-4" /> {label}
     </button>
   );
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-emerald-900 p-6">
-      <div className="text-center mb-8 anim-in">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200">Sistem Manajemen</p>
-        <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Pondok Pesantren Al Hasani</h1>
-        <p className="mt-1 text-sm text-emerald-100/80">Limpung · Batang</p>
+    <div className="lux-dark grain relative min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden">
+      <div className="pointer-events-none absolute inset-4 sm:inset-6 rounded-[28px] border border-amber-500/20" />
+      <div className="relative text-center mb-10 anim-in">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.45em] text-amber-400/90">Sistem Manajemen</p>
+        <h1 className="mt-3 font-display text-5xl sm:text-6xl font-semibold leading-none text-gold" data-testid="login-title">Pondok Pesantren Al Hasani</h1>
+        <div className="gold-hairline mx-auto mt-5 w-48" />
+        <p className="mt-3 text-sm tracking-[0.2em] uppercase text-emerald-100/70">Limpung · Batang</p>
       </div>
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl shadow-black/20 anim-in-2">
+      <div className="relative w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl shadow-black/40 ring-1 ring-amber-500/30 anim-in-2">
+        <div className="absolute inset-x-8 top-0 h-[2px] gold-fill rounded-full" />
         <form onSubmit={submit} data-testid="login-form">
-          <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950">Masuk</h2>
+          <h2 className="font-display text-3xl font-bold text-emerald-950">Masuk</h2>
           <p className="text-sm text-slate-500 mt-1 mb-8">Pilih jenis akun Anda untuk melanjutkan.</p>
 
-          <div className="flex gap-1 rounded-lg bg-slate-200/70 p-1 mb-6">
+          <div className="flex gap-1 rounded-lg bg-amber-50 ring-1 ring-amber-100 p-1 mb-6">
             {tab("staff", UserCog, "Pengurus / Ustadz")}
             {tab("santri", GraduationCap, "Santri")}
           </div>
@@ -55,26 +58,27 @@ export default function Login() {
           <div className="space-y-5">
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold uppercase tracking-wider text-slate-500">{mode === "santri" ? "NIS" : "Email"}</Label>
-              <Input value={identifier} onChange={(e) => setIdentifier(e.target.value)} required className="h-11 bg-white"
+              <Input value={identifier} onChange={(e) => setIdentifier(e.target.value)} required className="h-11 bg-white focus-visible:ring-amber-500"
                 type={mode === "santri" ? "text" : "email"} inputMode={mode === "santri" ? "numeric" : undefined}
                 placeholder={mode === "santri" ? "Contoh: 260101016" : "nama@alhasani.pengurus"}
                 data-testid={mode === "santri" ? "login-nis-input" : "login-email-input"} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold uppercase tracking-wider text-slate-500">Password</Label>
-              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="h-11 bg-white" data-testid="login-password-input" />
+              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="h-11 bg-white focus-visible:ring-amber-500" data-testid="login-password-input" />
             </div>
             {mode === "santri" && (
               <div className="flex gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800" data-testid="login-santri-hint">
                 <Info className="h-4 w-4 shrink-0" /> Password awal santri adalah <b className="mono">111111</b>. Segera ganti setelah masuk.
               </div>
             )}
-            <Button type="submit" disabled={busy} className="w-full h-11 bg-emerald-800 hover:bg-emerald-900 text-base rounded-xl" data-testid="login-submit-button">
+            <Button type="submit" disabled={busy} className="gold-fill gold-glow w-full h-11 text-base font-bold text-emerald-950 rounded-xl" data-testid="login-submit-button">
               {busy ? "Memproses..." : "Masuk"}
             </Button>
           </div>
         </form>
       </div>
+      <p className="relative mt-8 text-xs text-emerald-100/40">© PP Alhasani Limpung</p>
     </div>
   );
 }
