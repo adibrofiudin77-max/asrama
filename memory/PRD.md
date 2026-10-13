@@ -21,6 +21,9 @@ Administrator (semua akses), Pengurus (dashboard, santri/pendaftaran, pembayaran
 - Verified manually: admin & santri login, dashboard, tagihan, kwitansi render.
 - 2026-10-12: Full E2E test (iteration_1) on isolated Supabase schema `alhasani_test` (copy of real data): backend 27/27, frontend 100%. Test schema dropped afterwards; backend back on `public` (DB_SCHEMA env, default public). Fixed login_attempts counter.
 
+- 2026-10-13: Re-imported from GitHub (adibrofiudin77-max/asrama, main) into new workspace. Installed asyncpg (other deps already present). backend/.env: DATABASE_URL via Supabase session pooler aws-0-ap-southeast-2 (user postgres.wtdmqvdparooghepprhf; direct db.* host is IPv6-only), JWT_SECRET, ADMIN_EMAIL/PASSWORD, DB_SCHEMA=public.
+- 2026-10-13: Branding: title "PP Alhasani Limpung", favicon/apple-touch-icon from logo.png. Emerald + gold luxury theme: tailwind emerald/amber scales overridden (jewel emerald, metallic gold), Cormorant Garamond display font, dark emerald sidebar w/ gold active state, gold hairline header, gold login button, dark hero on portal.
+
 ## Backlog
 - P0: (done) End-to-end testing on isolated test schema — rerun by setting DB_SCHEMA=alhasani_test in backend/.env and restarting
 - P1: Import/backfill program keahlian for existing santri (currently empty)
