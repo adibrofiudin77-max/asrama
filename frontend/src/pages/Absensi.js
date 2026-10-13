@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api, errMsg, todayStr, firstOfMonthStr, kelasLabel } from "@/lib/api";
-import { PageHeader, Card, Empty } from "@/components/common";
+import { PageHeader, Card, Empty, GenderSwitch } from "@/components/common";
 import { NativeSelect } from "@/components/FormDialog";
 
 const ST = [
@@ -21,6 +21,7 @@ function InputAbsensi({ jadwal }) {
   const [idJadwal, setIdJadwal] = useState("");
   const [rows, setRows] = useState([]);
   const [busy, setBusy] = useState(false);
+  const [jk, setJk] = useState("L");
   const hari = HARI_JS[new Date(`${tanggal}T00:00:00`).getDay()];
 
   const opts = useMemo(() => [...jadwal].sort((a, b) => (b.hari === hari) - (a.hari === hari))
@@ -32,13 +33,16 @@ function InputAbsensi({ jadwal }) {
   }, [tanggal, idJadwal]);
 
   const setS = (nis, k, v) => setRows((p) => p.map((r) => (r.nis === nis ? { ...r, [k]: v } : r)));
-  const counts = ST.map((s) => rows.filter((r) => r.status === s.k).length);
+  const shown = rows.filter((r) => r.jenis_kelamin === jk);
+  const jkCount = { L: rows.filter((r) => r.jenis_kelamin === "L").length, P: rows.filter((r) => r.jenis_kelamin === "P").length };
+  const counts = ST.map((s) => shown.filter((r) => r.status === s.k).length);
+  const label = jk === "P" ? "Putri" : "Putra";
 
   const save = async () => {
-    const items = rows.filter((r) => r.status).map((r) => ({ nis: r.nis, status: r.status, keterangan: r.keterangan }));
+    const items = shown.filter((r) => r.status).map((r) => ({ nis: r.nis, status: r.status, keterangan: r.keterangan }));
     if (!items.length) return toast.error("Belum ada status yang dipilih");
     setBusy(true);
-    try { await api.post("/absensi", { tanggal, id_jadwal: Number(idJadwal), items }); toast.success(`Absensi ${items.length} santri tersimpan`); }
+    try { await api.post("/absensi", { tanggal, id_jadwal: Number(idJadwal), items }); toast.success(`Absensi ${label}: ${items.length} santri tersimpan`); }
     catch (e) { toast.error(errMsg(e)); } finally { setBusy(false); }
   };
 
@@ -54,24 +58,29 @@ function InputAbsensi({ jadwal }) {
           <NativeSelect value={idJadwal} onChange={(e) => setIdJadwal(e.target.value)} placeholder="- Pilih jadwal ngaji -" options={opts} data-testid="absensi-jadwal-select" />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" disabled={!rows.length} onClick={() => setRows((p) => p.map((r) => ({ ...r, status: "hadir" })))} data-testid="absensi-all-hadir-btn"><CheckCheck className="h-4 w-4 mr-1" /> Semua Hadir</Button>
-          <Button disabled={!rows.length || busy} onClick={save} className="bg-emerald-800 hover:bg-emerald-900" data-testid="absensi-save-btn"><Save className="h-4 w-4 mr-1" /> {busy ? "Menyimpan..." : "Simpan"}</Button>
+          <Button variant="outline" disabled={!shown.length} onClick={() => setRows((p) => p.map((r) => (r.jenis_kelamin === jk ? { ...r, status: "hadir" } : r)))} data-testid="absensi-all-hadir-btn"><CheckCheck className="h-4 w-4 mr-1" /> Semua Hadir</Button>
+          <Button disabled={!shown.length || busy} onClick={save} className="bg-emerald-800 hover:bg-emerald-900" data-testid="absensi-save-btn"><Save className="h-4 w-4 mr-1" /> {busy ? "Menyimpan..." : `Simpan ${label}`}</Button>
         </div>
       </Card>
-      {rows.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4 text-xs font-semibold" data-testid="absensi-summary">
-          {ST.map((s, i) => <span key={s.k} className={`rounded-full px-3 py-1 border ${s.on}`}>{s.k} {counts[i]}</span>)}
-          <span className="rounded-full px-3 py-1 border bg-white text-slate-600">belum diisi {rows.filter((r) => !r.status).length}</span>
+      {idJadwal && (
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          <GenderSwitch value={jk} onChange={setJk} counts={jkCount} testId="absensi-gender" />
+          {shown.length > 0 && (
+            <div className="flex flex-wrap gap-2 text-xs font-semibold" data-testid="absensi-summary">
+              {ST.map((s, i) => <span key={s.k} className={`rounded-full px-3 py-1 border ${s.on}`}>{s.k} {counts[i]}</span>)}
+              <span className="rounded-full px-3 py-1 border bg-white text-slate-600">belum diisi {shown.filter((r) => !r.status).length}</span>
+            </div>
+          )}
         </div>
       )}
       <Card className="overflow-x-auto">
-        {!idJadwal ? <Empty text="Pilih tanggal & jadwal untuk mulai absensi" /> : (
+        {!idJadwal ? <Empty text="Pilih tanggal & jadwal untuk mulai absensi" /> : shown.length > 0 && (
           <table className="w-full text-sm" data-testid="absensi-matrix-table">
             <thead className="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
-              <tr><th className="px-4 py-3">#</th><th className="px-4 py-3">Santri</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Keterangan</th></tr>
+              <tr><th className="px-4 py-3">#</th><th className="px-4 py-3">Santri {label}</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Keterangan</th></tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {rows.map((r, i) => (
+              {shown.map((r, i) => (
                 <tr key={r.nis} data-testid={`absensi-row-${r.nis}`}>
                   <td className="px-4 py-2.5 text-slate-400">{i + 1}</td>
                   <td className="px-4 py-2.5"><p className="font-semibold">{r.nama}</p><p className="text-xs text-slate-500">{r.nis} · {r.jenis_kelamin} · Kelas {kelasLabel(r)}</p></td>
@@ -89,7 +98,7 @@ function InputAbsensi({ jadwal }) {
             </tbody>
           </table>
         )}
-        {idJadwal && rows.length === 0 && <Empty text="Tidak ada santri aktif" />}
+        {idJadwal && shown.length === 0 && <Empty text={`Tidak ada santri ${label.toLowerCase()} aktif`} />}
       </Card>
     </>
   );
@@ -99,13 +108,17 @@ function Rekap() {
   const [dari, setDari] = useState(firstOfMonthStr());
   const [sampai, setSampai] = useState(todayStr());
   const [rows, setRows] = useState([]);
+  const [jk, setJk] = useState("L");
   const load = useCallback(() => api.get("/absensi/rekap", { params: { dari, sampai } }).then((r) => setRows(r.data)).catch((e) => toast.error(errMsg(e))), [dari, sampai]);
   useEffect(() => { load(); }, [load]);
+  const shown = rows.filter((r) => r.jenis_kelamin === jk);
+  const jkCount = { L: rows.filter((r) => r.jenis_kelamin === "L").length, P: rows.filter((r) => r.jenis_kelamin === "P").length };
   return (
     <>
       <Card className="p-4 mb-6 flex flex-wrap gap-3 items-end">
         <div><p className="text-xs font-semibold text-slate-500 mb-1">DARI</p><Input type="date" value={dari} onChange={(e) => setDari(e.target.value)} data-testid="rekap-dari" /></div>
         <div><p className="text-xs font-semibold text-slate-500 mb-1">SAMPAI</p><Input type="date" value={sampai} onChange={(e) => setSampai(e.target.value)} data-testid="rekap-sampai" /></div>
+        <GenderSwitch value={jk} onChange={setJk} counts={jkCount} testId="rekap-gender" />
       </Card>
       <Card className="overflow-x-auto">
         <table className="w-full text-sm" data-testid="rekap-table">
@@ -113,7 +126,7 @@ function Rekap() {
             <tr><th className="px-4 py-3">Santri</th><th className="px-4 py-3">Kelas</th><th className="px-4 py-3 text-center">Hadir</th><th className="px-4 py-3 text-center">Sakit</th><th className="px-4 py-3 text-center">Izin</th><th className="px-4 py-3 text-center">Alpha</th><th className="px-4 py-3 text-right">% Hadir</th></tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {rows.map((r) => (
+            {shown.map((r) => (
               <tr key={r.nis}>
                 <td className="px-4 py-2.5 font-semibold">{r.nama}</td><td className="px-4 py-2.5 whitespace-nowrap">{kelasLabel(r)}</td>
                 <td className="px-4 py-2.5 text-center text-green-700">{r.hadir}</td><td className="px-4 py-2.5 text-center text-yellow-700">{r.sakit}</td>

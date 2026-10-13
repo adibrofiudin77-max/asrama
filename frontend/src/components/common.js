@@ -13,8 +13,13 @@ const STYLES = {
   lulus: "bg-amber-50 text-amber-700 ring-amber-600/30",
   pemasukan: "bg-green-50 text-green-700 ring-green-600/20",
   pengeluaran: "bg-red-50 text-red-700 ring-red-600/20",
+  sebagian: "bg-amber-50 text-amber-800 ring-amber-600/30",
+  lunas_manual: "bg-green-50 text-green-700 ring-green-600/20",
+  menunggu: "bg-amber-50 text-amber-800 ring-amber-600/30",
+  disetujui: "bg-green-50 text-green-700 ring-green-600/20",
+  ditolak: "bg-red-50 text-red-700 ring-red-600/20",
 };
-const LABEL = { belum: "Belum Lunas", lunas: "Lunas", dibebaskan: "Dibebaskan", alpha: "Alpha" };
+const LABEL = { belum: "Belum Lunas", lunas: "Lunas", dibebaskan: "Dibebaskan", alpha: "Alpha", sebagian: "Kurang", lunas_manual: "Lunas (Manual)" };
 
 export function StatusBadge({ status, testId }) {
   return (
@@ -45,4 +50,17 @@ export function Card({ className = "", children, ...p }) {
 
 export function Empty({ text = "Belum ada data" }) {
   return <div className="py-10 text-center text-sm text-slate-400">{text}</div>;
+}
+
+export function GenderSwitch({ value, onChange, counts, testId }) {
+  return (
+    <div className="inline-flex gap-1 rounded-lg bg-white ring-1 ring-amber-900/10 p-1" data-testid={testId}>
+      {[["L", "Putra"], ["P", "Putri"]].map(([k, l]) => (
+        <button key={k} type="button" onClick={() => onChange(k)} data-testid={`${testId}-${k}`}
+          className={`rounded-md px-4 py-1.5 text-sm font-semibold transition-colors ${value === k ? "bg-emerald-900 text-amber-200 shadow-sm" : "text-slate-500 hover:text-emerald-900"}`}>
+          {l}{counts ? ` (${counts[k] || 0})` : ""}
+        </button>
+      ))}
+    </div>
+  );
 }

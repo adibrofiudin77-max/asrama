@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { api, errMsg, rupiah, tgl, terbilang, kelasLabel } from "@/lib/api";
+import { api, errMsg, rupiah, tgl, terbilang, kelasLabel, BULAN } from "@/lib/api";
 
 const PAGE_CSS = `
 @page { size: 229mm 162mm; margin: 0; }
@@ -28,7 +28,11 @@ export default function Kwitansi() {
   if (err) return <p className="p-10 text-red-600" data-testid="receipt-error">{err}</p>;
   if (!p) return <p className="p-10 text-slate-500">Memuat kwitansi...</p>;
 
-  const untuk = p.jenis_pembayaran === "syariah" ? `Syariah Bulanan ${p.bulan_tagihan} ${p.tahun_tagihan}` : "Biaya Pendaftaran Santri";
+  const alok = p.alokasi || [];
+  const untuk = p.jenis_pembayaran !== "syariah" ? "Biaya Pendaftaran Santri"
+    : alok.length ? `Syariah Bulanan: ${alok.map((a) => `${BULAN[a.bulan - 1]} ${a.tahun} (${rupiah(a.nominal)}${Number(a.sisa) > 0 ? `, kurang ${rupiah(a.sisa)}` : ""})`).join("; ")}`
+      : `Syariah Bulanan ${p.bulan_tagihan} ${p.tahun_tagihan}`;
+  const partial = alok.some((a) => Number(a.sisa) > 0);
 
   return (
     <div className="kw-wrap min-h-screen bg-slate-200 py-8 px-4">
@@ -57,7 +61,7 @@ export default function Kwitansi() {
           <Row label="Telah terima dari">{p.nama}</Row>
           <Row label="NIS / Kelas" testId="receipt-santri-nis">{p.nis} / Kelas {kelasLabel(p)}{p.nama_kamar ? ` / Kamar ${p.nama_kamar}` : ""}</Row>
           <Row label="Uang sejumlah"><i className="font-semibold">{terbilang(p.nominal)}</i></Row>
-          <Row label="Untuk pembayaran">{untuk}{p.keterangan ? ` (${p.keterangan})` : ""}</Row>
+          <Row label="Untuk pembayaran" testId="receipt-untuk">{untuk}{p.keterangan ? ` (${p.keterangan})` : ""}</Row>
         </div>
 
         <div className="relative mt-[6mm] flex items-end justify-between">
@@ -65,7 +69,7 @@ export default function Kwitansi() {
             <div className="inline-block border-[0.5mm] border-emerald-900 bg-emerald-50 px-[5mm] py-[2.5mm] -skew-x-6">
               <p className="skew-x-6 text-[6.5mm] font-extrabold text-emerald-950 mono" data-testid="receipt-amount-text">{rupiah(p.nominal)}</p>
             </div>
-            <p className="mt-[3mm] inline-block rotate-[-4deg] border-[0.5mm] border-green-700 px-[3mm] py-[0.8mm] text-[3.6mm] font-extrabold tracking-[0.3em] text-green-700">LUNAS</p>
+            <p className="mt-[3mm] inline-block rotate-[-4deg] border-[0.5mm] border-green-700 px-[3mm] py-[0.8mm] text-[3.6mm] font-extrabold tracking-[0.3em] text-green-700" data-testid="receipt-stamp">{partial ? "DITERIMA" : "LUNAS"}</p>
           </div>
           <div className="text-center w-[60mm]">
             <p>Limpung, {tgl(p.tanggal_bayar)}</p>

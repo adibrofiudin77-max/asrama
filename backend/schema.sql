@@ -36,6 +36,22 @@ CREATE TABLE IF NOT EXISTS tagihan_status (
   status varchar(20) NOT NULL DEFAULT 'dibebaskan', keterangan text, created_by bigint, created_at timestamptz,
   CONSTRAINT tagihan_status_unique UNIQUE (nis, bulan, tahun));
 CREATE TABLE IF NOT EXISTS login_attempts (identifier varchar(255) PRIMARY KEY, attempts int NOT NULL DEFAULT 0, locked_until timestamptz);
+CREATE TABLE IF NOT EXISTS pembayaran_alokasi (
+  id bigserial PRIMARY KEY, id_pembayaran bigint NOT NULL REFERENCES pembayaran(id_pembayaran) ON DELETE CASCADE,
+  nis varchar(20) NOT NULL REFERENCES santri(nis) ON DELETE CASCADE, bulan int NOT NULL, tahun int NOT NULL,
+  nominal numeric(12,2) NOT NULL, tarif numeric(12,2) NOT NULL, sisa numeric(12,2) NOT NULL DEFAULT 0, created_at timestamptz);
+CREATE INDEX IF NOT EXISTS pembayaran_alokasi_nis_index ON pembayaran_alokasi(nis);
+CREATE INDEX IF NOT EXISTS pembayaran_alokasi_pid_index ON pembayaran_alokasi(id_pembayaran);
+CREATE TABLE IF NOT EXISTS wa_penerima (id bigserial PRIMARY KEY, nama varchar(100) NOT NULL, no_hp varchar(20) NOT NULL UNIQUE, aktif boolean NOT NULL DEFAULT true, created_at timestamptz);
+CREATE TABLE IF NOT EXISTS izin_pulang (
+  id bigserial PRIMARY KEY, nis varchar(20) NOT NULL REFERENCES santri(nis) ON DELETE CASCADE,
+  tanggal_pulang date NOT NULL, tanggal_kembali date NOT NULL, penjemput varchar(100) NOT NULL, alasan text NOT NULL,
+  status varchar(20) NOT NULL DEFAULT 'menunggu', catatan text, diproses_oleh varchar(255), diproses_at timestamptz,
+  notif_wa varchar(255), created_at timestamptz);
+CREATE INDEX IF NOT EXISTS izin_pulang_nis_index ON izin_pulang(nis);
+ALTER TABLE pembayaran_alokasi ENABLE ROW LEVEL SECURITY;
+ALTER TABLE wa_penerima ENABLE ROW LEVEL SECURITY;
+ALTER TABLE izin_pulang ENABLE ROW LEVEL SECURITY;
 ALTER TABLE app_meta ENABLE ROW LEVEL SECURITY;
 ALTER TABLE kamar ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ustadz ENABLE ROW LEVEL SECURITY;

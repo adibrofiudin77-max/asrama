@@ -43,7 +43,7 @@ function Field({ f, value, onChange, testId }) {
   );
 }
 
-export function FormDialog({ open, onOpenChange, title, description, fields, initial, onSubmit, submitLabel = "Simpan", testId }) {
+export function FormDialog({ open, onOpenChange, title, description, fields, initial, onSubmit, submitLabel = "Simpan", testId, extra }) {
   const [v, setV] = useState({});
   const [busy, setBusy] = useState(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,6 +73,7 @@ export function FormDialog({ open, onOpenChange, title, description, fields, ini
               <Field f={f} value={v[f.name]} onChange={(val) => setV((p) => ({ ...p, [f.name]: val }))} testId={testId} />
             </div>
           ))}
+          {extra && <div className="sm:col-span-2">{extra(v, setV)}</div>}
           <DialogFooter className="sm:col-span-2 gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} data-testid={`${testId}-cancel`}>Batal</Button>
             <Button type="submit" disabled={busy} className="bg-emerald-800 hover:bg-emerald-900" data-testid={`${testId}-submit`}>

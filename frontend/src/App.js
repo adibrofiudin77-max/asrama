@@ -15,6 +15,7 @@ import Keuangan from "@/pages/Keuangan";
 import Master from "@/pages/Master";
 import Pengguna from "@/pages/Pengguna";
 import Portal from "@/pages/Portal";
+import IzinPulang from "@/pages/IzinPulang";
 import "@/App.css";
 import "@/dark.css";
 
@@ -57,6 +58,7 @@ export default function App() {
             <Route path="santri" element={<Guard roles={S}><Santri /></Guard>} />
             <Route path="pembayaran" element={<Guard roles={S}><Pembayaran /></Guard>} />
             <Route path="absensi" element={<Guard roles={["admin", "pengurus", "ustadz"]}><Absensi /></Guard>} />
+            <Route path="izin" element={<Guard roles={S}><IzinPulang /></Guard>} />
             <Route path="jadwal" element={<Guard roles={S}><Jadwal /></Guard>} />
             <Route path="kenaikan-kelas" element={<Guard roles={A}><KenaikanKelas /></Guard>} />
             <Route path="keuangan" element={<Guard roles={A}><Keuangan /></Guard>} />

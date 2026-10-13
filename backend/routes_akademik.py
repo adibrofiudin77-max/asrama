@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 import db
 from auth import require_roles, get_current_user
-from routes_keuangan import tagihan_overview
+from routes_keuangan import tagihan_overview, with_rincian
 from utils import today_wib
 
 router = APIRouter(prefix="/api")
@@ -123,7 +123,16 @@ async def kehadiran_saya(user=Depends(require_roles("santri"))):
         "where k.nis=$1 order by k.tanggal desc, j.waktu", user["nis"])
     summary = {s: sum(1 for i in items if i["status"] == s) for s in STATUS}
     total = len(items)
-    return {"items": items, "summary": summary, "total": total, "persen": round(summary["hadir"] * 100 / total, 1) if total else 0}
+    per = {}
+    for i in items:
+        g = per.setdefault(i["id_jadwal"], {"id_jadwal": i["id_jadwal"], "nama_kegiatan": i["nama_kegiatan"] or "Ngaji", "hari": i["hari"], "waktu": i["waktu"],
+                                            "total": 0, "terakhir": i["tanggal"], "status_terakhir": i["status"], **{s: 0 for s in STATUS}})
+        g[i["status"]] += 1
+        g["total"] += 1
+    for g in per.values():
+        g["persen"] = round(g["hadir"] * 100 / g["total"], 1)
+    return {"items": items, "summary": summary, "total": total, "persen": round(summary["hadir"] * 100 / total, 1) if total else 0,
+            "per_kegiatan": sorted(per.values(), key=lambda g: g["nama_kegiatan"])}
 
 
 @router.get("/dashboard")
@@ -153,4 +162,4 @@ async def dashboard(periode: str = "bulan", user=Depends(STAFF)):
     }
     if user["role"] == "admin":
         stats["saldo_kas"] = float(saldo)
-    return {"stats": stats, "top_rajin": rajin, "top_malas": malas, "pembayaran_terbaru": recent, "periode": periode}
+    return {"stats": stats, "top_rajin": rajin, "top_malas": malas, "pembayaran_terbaru": await with_rincian(recent), "periode": periode}

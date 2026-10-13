@@ -4,39 +4,10 @@ import { Clock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api, errMsg, rupiah, tgl, HARI, kelasLabel } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
-import { Card, Empty, StatusBadge } from "@/components/common";
+import { Card, Empty } from "@/components/common";
 import { PendaftaranCard, TagihanGrid, RiwayatTable } from "@/components/Tagihan";
-
-function Kehadiran({ k }) {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3" data-testid="santri-portal-attendance-chart">
-        <Card className="p-4 col-span-2 sm:col-span-1 bg-emerald-900 text-white border-amber-500/30">
-          <p className="text-xs uppercase tracking-wider text-amber-300">Kehadiran</p>
-          <p className="text-3xl font-extrabold text-white mono" data-testid="portal-persen-hadir">{k.persen}%</p>
-        </Card>
-        {["hadir", "sakit", "izin", "alpha"].map((s) => (
-          <Card key={s} className="p-4"><p className="text-xs uppercase tracking-wider text-slate-500 capitalize">{s}</p><p className="text-2xl font-extrabold text-emerald-950">{k.summary[s]}</p></Card>
-        ))}
-      </div>
-      <Card className="overflow-x-auto">
-        {k.items.length === 0 ? <Empty text="Belum ada catatan kehadiran" /> : (
-          <table className="w-full text-sm" data-testid="portal-kehadiran-table">
-            <thead className="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
-              <tr><th className="px-4 py-3">Tanggal</th><th className="px-4 py-3">Kegiatan</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Keterangan</th></tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {k.items.map((i) => (
-                <tr key={i.id_kehadiran}><td className="px-4 py-2.5 whitespace-nowrap">{tgl(i.tanggal)}</td><td className="px-4 py-2.5">{i.nama_kegiatan || "Ngaji"}</td>
-                  <td className="px-4 py-2.5"><StatusBadge status={i.status} /></td><td className="px-4 py-2.5 text-slate-500">{i.keterangan || "-"}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </Card>
-    </div>
-  );
-}
+import { KegiatanSaya } from "@/components/KegiatanSaya";
+import { IzinSantri } from "@/components/IzinSantri";
 
 export default function Portal() {
   const { user } = useAuth();
@@ -66,11 +37,12 @@ export default function Portal() {
         </div>
       </Card>
 
-      <Tabs defaultValue="tagihan">
-        <TabsList className="mb-6">
+      <Tabs defaultValue="kehadiran">
+        <TabsList className="mb-6 flex-wrap h-auto">
+          <TabsTrigger value="kehadiran" data-testid="portal-tab-kehadiran">Kegiatan & Kehadiran</TabsTrigger>
           <TabsTrigger value="tagihan" data-testid="portal-tab-tagihan">Tagihan</TabsTrigger>
           <TabsTrigger value="jadwal" data-testid="portal-tab-jadwal">Jadwal Ngaji</TabsTrigger>
-          <TabsTrigger value="kehadiran" data-testid="portal-tab-kehadiran">Kehadiran</TabsTrigger>
+          <TabsTrigger value="izin" data-testid="portal-tab-izin">Izin Pulang</TabsTrigger>
         </TabsList>
         <TabsContent value="tagihan" className="space-y-6" data-testid="santri-portal-bills-card">
           <PendaftaranCard p={t.pendaftaran} />
@@ -91,7 +63,8 @@ export default function Portal() {
           </div>
           {jadwal.length === 0 && <Empty />}
         </TabsContent>
-        <TabsContent value="kehadiran"><Kehadiran k={k} /></TabsContent>
+        <TabsContent value="kehadiran"><KegiatanSaya k={k} jadwal={jadwal} /></TabsContent>
+        <TabsContent value="izin"><IzinSantri /></TabsContent>
       </Tabs>
     </div>
   );

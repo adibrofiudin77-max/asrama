@@ -29,6 +29,9 @@
 .dark .hover\:bg-emerald-50\/40:hover { background-color: rgba(18, 105, 72, 0.22); }
 .dark .bg-amber-50 { background-color: rgba(201, 162, 63, 0.1); }
 .dark .bg-amber-100 { background-color: rgba(201, 162, 63, 0.18); }
+.dark .bg-amber-50\/60 { background-color: rgba(201, 162, 63, 0.08); }
+.dark .hover\:bg-amber-100:hover { background-color: rgba(201, 162, 63, 0.2); }
+.dark .border-amber-300 { border-color: rgba(201, 162, 63, 0.4); }
 .dark .hover\:bg-amber-50:hover { background-color: rgba(201, 162, 63, 0.12); }
 .dark .bg-red-50,
 .dark .hover\:bg-red-50:hover { background-color: rgba(239, 68, 68, 0.12); }

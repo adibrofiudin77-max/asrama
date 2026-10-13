@@ -13,8 +13,10 @@ import db
 from auth import router as auth_router, seed_admin
 from routes_master import router as master_router
 from routes_akademik import router as akademik_router
-from routes_keuangan import router as keuangan_router
+from routes_keuangan import router as keuangan_router, migrate_alokasi
+from routes_izin import router as izin_router
 from legacy_import import import_legacy
+from wa import seed_wa
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
@@ -25,12 +27,14 @@ async def lifespan(app: FastAPI):
     await db.execute((ROOT_DIR / "schema.sql").read_text())
     await import_legacy()
     await seed_admin()
+    await migrate_alokasi()
+    await seed_wa()
     yield
     await db.close_pool()
 
 
 app = FastAPI(lifespan=lifespan)
-for r in (auth_router, master_router, akademik_router, keuangan_router):
+for r in (auth_router, master_router, akademik_router, keuangan_router, izin_router):
     app.include_router(r)
 
 

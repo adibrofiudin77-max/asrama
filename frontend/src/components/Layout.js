@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { toast } from "sonner";
-import { LayoutDashboard, Users, Wallet, ClipboardCheck, CalendarClock, GraduationCap, Landmark, BedDouble, ShieldCheck, Home, LogOut, KeyRound, Menu, X } from "lucide-react";
+import { LayoutDashboard, Users, Wallet, ClipboardCheck, CalendarClock, GraduationCap, Landmark, BedDouble, ShieldCheck, Home, LogOut, KeyRound, Menu, X, DoorOpen } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { api, ROLE_LABEL } from "@/lib/api";
 import { FormDialog } from "@/components/FormDialog";
@@ -12,6 +12,7 @@ const NAV = [
   { to: "/santri", label: "Data Santri", icon: Users, roles: ["admin", "pengurus"] },
   { to: "/pembayaran", label: "Pembayaran", icon: Wallet, roles: ["admin", "pengurus"] },
   { to: "/absensi", label: "Absensi Ngaji", icon: ClipboardCheck, roles: ["admin", "pengurus", "ustadz"] },
+  { to: "/izin", label: "Izin Pulang", icon: DoorOpen, roles: ["admin", "pengurus"] },
   { to: "/jadwal", label: "Jadwal Ngaji", icon: CalendarClock, roles: ["admin", "pengurus"] },
   { to: "/kenaikan-kelas", label: "Kenaikan Kelas", icon: GraduationCap, roles: ["admin"] },
   { to: "/keuangan", label: "Keuangan", icon: Landmark, roles: ["admin"] },

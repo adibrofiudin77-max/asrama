@@ -96,7 +96,7 @@ export default function Dashboard() {
               <div key={p.id_pembayaran} className="flex justify-between py-3 text-sm">
                 <div>
                   <p className="font-semibold">{p.nama}</p>
-                  <p className="text-xs text-slate-500">{p.jenis_pembayaran === "syariah" ? `Syariah ${p.bulan_tagihan} ${p.tahun_tagihan}` : "Pendaftaran"} · {tgl(p.tanggal_bayar)}</p>
+                  <p className="text-xs text-slate-500">{p.rincian} · {tgl(p.tanggal_bayar)}</p>
                 </div>
                 <p className="font-bold mono text-emerald-800">{rupiah(p.nominal)}</p>
               </div>
