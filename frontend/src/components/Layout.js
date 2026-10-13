@@ -35,7 +35,7 @@ function Sidebar({ user, onNavigate }) {
             <img src="/logo.png" alt="Logo Al Hasani" className="h-10 w-10" data-testid="sidebar-logo" />
           </div>
           <div>
-            <p className="font-display text-2xl font-bold leading-none text-gold">Al Hasani</p>
+            <p className="text-lg font-extrabold tracking-tight leading-none text-gold">AL HASANI</p>
             <p className="mt-1 text-[10px] uppercase tracking-[0.3em] text-emerald-100/50">Limpung · Batang</p>
           </div>
         </div>

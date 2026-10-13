@@ -12,7 +12,7 @@ function KegiatanCard({ g }) {
           <p className="font-semibold text-emerald-950 truncate">{g.nama_kegiatan}</p>
           <p className="text-xs text-slate-500 flex items-center gap-1"><Clock className="h-3 w-3" />{g.hari || "-"} {g.waktu ? g.waktu.slice(0, 5) : ""}</p>
         </div>
-        <p className="font-display text-3xl font-bold leading-none text-emerald-900">{g.total ? `${g.persen}%` : "-"}</p>
+        <p className="text-2xl font-extrabold leading-none text-emerald-900">{g.total ? `${g.persen}%` : "-"}</p>
       </div>
       <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
         <div className="h-full rounded-full bg-gradient-to-r from-emerald-700 to-amber-500" style={{ width: `${g.persen || 0}%` }} />

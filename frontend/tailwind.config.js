@@ -14,9 +14,6 @@ module.exports = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
       },
-      fontFamily: {
-        display: ['"Cormorant Garamond"', 'serif']
-      },
       colors: {
         emerald: {
           50: '#EEF6F2', 100: '#D5EADF', 200: '#ABD5C0', 300: '#76B99A', 400: '#409973', 500: '#1F7D58',

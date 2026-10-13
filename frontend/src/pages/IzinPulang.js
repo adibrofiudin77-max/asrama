@@ -99,7 +99,7 @@ function RekapIzin() {
               {shown.map((r) => (
                 <tr key={r.nis} data-testid={`izin-rekap-row-${r.nis}`}>
                   <td className={`${TH} font-semibold`}>{r.nama}</td><td className={TH}>{kelasLabel(r)}</td>
-                  <td className={`${TH} text-center font-display text-2xl font-bold text-emerald-900`} data-testid={`izin-rekap-jumlah-${r.nis}`}>{r.jumlah_pulang}</td>
+                  <td className={`${TH} text-center text-xl font-extrabold text-emerald-900`} data-testid={`izin-rekap-jumlah-${r.nis}`}>{r.jumlah_pulang}</td>
                   <td className={`${TH} text-center`}>{r.total_hari}</td><td className={TH}>{r.terakhir_pulang ? tgl(r.terakhir_pulang) : "-"}</td>
                   <td className={`${TH} text-center`}>{r.menunggu ? <StatusBadge status="menunggu" /> : "-"}</td>
                 </tr>

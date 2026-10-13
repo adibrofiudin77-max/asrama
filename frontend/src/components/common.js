@@ -33,10 +33,7 @@ export function PageHeader({ title, subtitle, children }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-8 anim-in">
       <div>
-        <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-600 mb-2">
-          <span className="h-px w-6 bg-amber-500" /> Pondok Pesantren Alhasani
-        </p>
-        <h1 className="font-display text-4xl sm:text-5xl font-bold leading-none text-emerald-950">{title}</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-emerald-950">{title}</h1>
         {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
       </div>
       {children && <div className="flex flex-wrap gap-2 no-print">{children}</div>}

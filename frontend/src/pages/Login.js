@@ -40,14 +40,14 @@ export default function Login() {
       <div className="pointer-events-none absolute inset-4 sm:inset-6 rounded-[28px] border border-amber-500/20" />
       <div className="relative text-center mb-10 anim-in">
         <p className="text-[11px] font-semibold uppercase tracking-[0.45em] text-amber-400/90">Sistem Manajemen</p>
-        <h1 className="mt-3 font-display text-5xl sm:text-6xl font-semibold leading-none text-gold" data-testid="login-title">Pondok Pesantren Al Hasani</h1>
+        <h1 className="mt-3 text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-gold" data-testid="login-title">Pondok Pesantren Al Hasani</h1>
         <div className="gold-hairline mx-auto mt-5 w-48" />
         <p className="mt-3 text-sm tracking-[0.2em] uppercase text-emerald-100/70">Limpung · Batang</p>
       </div>
       <div className="relative w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl shadow-black/40 ring-1 ring-amber-500/30 anim-in-2">
         <div className="absolute inset-x-8 top-0 h-[2px] gold-fill rounded-full" />
         <form onSubmit={submit} data-testid="login-form">
-          <h2 className="font-display text-3xl font-bold text-emerald-950">Masuk</h2>
+          <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950">Masuk</h2>
           <p className="text-sm text-slate-500 mt-1 mb-8">Pilih jenis akun Anda untuk melanjutkan.</p>
 
           <div className="flex gap-1 rounded-lg bg-amber-50 ring-1 ring-amber-100 p-1 mb-6">
