@@ -1,0 +1,147 @@
+{
+  "project_name": "Web App Manajemen Pondok Pesantren Al-Hasani Limpung",
+  "app_type": "dashboard",
+  "archetype": "ORGANIC_HERITAGE_ISLAMIC",
+  "language": "Indonesian",
+  "theme": "Light theme default with rich Emerald primary, Warm Gold accents, and crisp Slate data tables. Optional high-contrast dark mode support.",
+  "roles_and_permissions": {
+    "administrator": {
+      "access": "Full System Access (Santri, Pengurus, Ustadz, Kamar, Jadwal, Absensi, Pembayaran, Kenaikan Kelas, Keuangan, System Config)",
+      "billing_rights": "Can override payment status (e.g. set Dibebaskan / PKL exemption for specific months)"
+    },
+    "pengurus": {
+      "access": "Absensi Input, Pembayaran & Kwitansi, Pendaftaran Santri Baru, Input Jadwal Ngaji, Keuangan Cash Ledger",
+      "billing_rights": "Can input payments, issue receipts with logged-in signature"
+    },
+    "ustadz": {
+      "access": "Absensi Input Only (Input attendance for assigned jadwal ngaji & classes)"
+    },
+    "santri": {
+      "login": "NIS (Nomor Induk Santri) with default password '111111'",
+      "access": "Santri Portal Only (View personal billings/tagihan, jadwal mengaji, and attendance history/daftar kehadiran)"
+    }
+  },
+  "typography": {
+    "font_family_heading": "Plus Jakarta Sans, sans-serif",
+    "font_family_body": "Inter, sans-serif",
+    "font_family_mono": "JetBrains Mono, monospace",
+    "scale": {
+      "h1": "text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight",
+      "h2": "text-2xl sm:text-3xl font-bold tracking-tight",
+      "h3": "text-xl sm:text-2xl font-semibold",
+      "h4": "text-lg font-semibold",
+      "body": "text-sm sm:text-base leading-relaxed",
+      "caption": "text-xs font-medium text-slate-500 uppercase tracking-wider"
+    }
+  },
+  "colors": {
+    "primary": {
+      "emerald_900": "#064E3B",
+      "emerald_800": "#065F46",
+      "emerald_700": "#047857",
+      "emerald_600": "#059669",
+      "emerald_100": "#D1FAE5",
+      "emerald_50": "#ECFDF5"
+    },
+    "accent": {
+      "amber_600": "#D97706",
+      "amber_500": "#F59E0B",
+      "amber_100": "#FEF3C7"
+    },
+    "status": {
+      "hadir_lunas": "#16A34A",
+      "sakit_warning": "#EAB308",
+      "izin_info": "#2563EB",
+      "alpha_belum": "#DC2626",
+      "exempt_pkl": "#7C3AED"
+    },
+    "surfaces": {
+      "bg_app": "bg-slate-50",
+      "card": "bg-white border border-slate-200/80 shadow-sm rounded-xl",
+      "sidebar": "bg-emerald-950 text-slate-100",
+      "header": "bg-white/90 backdrop-blur-md border-b border-slate-200/80 z-40"
+    }
+  },
+  "business_rules_fees": {
+    "pendaftaran_fee": 150000,
+    "pembayaran_bulanan_fee": 100000,
+    "billing_start_rule": "Terhitung sejak 1 bulan setelah tanggal pendaftaran santri baru.",
+    "pkl_exemption_rule": "Administrator dapat mengubah status bulan tertentu (contoh: Juni) menjadi 'Dibebaskan (PKL)' sehingga santri tidak dibebani biaya bulanan.",
+    "receipt_paper_size": "Envelope C5 Landscape (229mm x 162mm)",
+    "receipt_header": "PONDOK PESANTREN ALHASANI LIMPUNG\nJl. KH. Wahid Hasyim No. 01 Limpung",
+    "receipt_signature": "Nama Pengurus / Administrator yang sedang login"
+  },
+  "key_components_and_pages": [
+    {
+      "name": "Auth / Login Page",
+      "description": "Unified dual tab login: Staff/Pengurus/Ustadz (Email) and Santri (NIS). Shows prominent helper notice for Santri default password '111111'.",
+      "data_testids": ["login-tab-staff", "login-tab-santri", "login-email-input", "login-nis-input", "login-password-input", "login-submit-button"]
+    },
+    {
+      "name": "Dashboard Overview",
+      "description": "Metric summaries (Total Santri, Kehadiran Hari Ini, Total Kas Pesantren, Tagihan Belum Lunas) + Top 5 Santri Ter-rajin & Top 5 Santri Ter-malas based on attendance rate + Quick Actions.",
+      "data_testids": ["dashboard-stat-total-santri", "dashboard-stat-kehadiran", "dashboard-top-rajin-card", "dashboard-top-malas-card"]
+    },
+    {
+      "name": "Data Santri & Pendaftaran Baru",
+      "description": "Santri directory grid/table with filter by status/class/room, NIS generator, register new santri modal automatically calculating registration fee (150k) and setting up monthly billing schedule.",
+      "data_testids": ["santri-add-button", "santri-search-input", "santri-table", "santri-form-submit"]
+    },
+    {
+      "name": "Kenaikan Kelas (Bulk Class Promotion)",
+      "description": "Select origin class, filter active santri, bulk check selection, assign target new class & academic year, preview changes, execute promotion, and view class promotion history log.",
+      "data_testids": ["kenaikan-kelas-origin-select", "kenaikan-kelas-target-select", "kenaikan-kelas-bulk-promote-btn", "kenaikan-kelas-history-table"]
+    },
+    {
+      "name": "Jadwal Ngaji & Absensi Input",
+      "description": "Schedule CRUD per Kitab/Ustadz/Waktu. Matrix attendance input view (Hadir, Sakit, Izin, Alpha) for date & schedule with batch save and auto stats calculator.",
+      "data_testids": ["jadwal-add-btn", "absensi-date-picker", "absensi-matrix-table", "absensi-save-btn"]
+    },
+    {
+      "name": "Pembayaran & Monthly Billing Grid",
+      "description": "Interactive 12-month billing matrix per santri (Jan-Des). Status indicators: Lunas, Belum Lunas, Dibebaskan (PKL). Admin option to override month status to 'Dibebaskan (PKL)'. Quick payment modal with invoice receipt generator.",
+      "data_testids": ["billing-matrix-table", "billing-status-badge", "billing-override-status-btn", "billing-pay-submit-btn", "billing-print-receipt-btn"]
+    },
+    {
+      "name": "Cetak Kwitansi C5 Landscape",
+      "description": "Dedicated printable component formatted strictly for Envelope C5 Landscape (229mm x 162mm) with official header 'PONDOK PESANTREN ALHASANI LIMPUNG, Jl. KH. Wahid Hasyim No. 01 Limpung', payment details, terbilang text, watermark badge, and official signature block with logged-in user name.",
+      "data_testids": ["receipt-container-c5", "receipt-header-text", "receipt-santri-nis", "receipt-amount-text", "receipt-signature-name", "receipt-trigger-print-btn"]
+    },
+    {
+      "name": "Keuangan (Simple Cash Ledger & Report)",
+      "description": "Income (Pemasukan: Pendaftaran, SPP Bulanan, Donasi) & Expense (Pengeluaran: Operasional, Listrik, Konsumsi) ledger, summary charts, and printable cash report.",
+      "data_testids": ["keuangan-add-income-btn", "keuangan-add-expense-btn", "keuangan-balance-card", "keuangan-table"]
+    },
+    {
+      "name": "Santri Portal",
+      "description": "Personalized student dashboard showing active bills/tagihan (100k/mo), next study schedule (jadwal mengaji), and personal attendance statistics (persentase kehadiran & log).",
+      "data_testids": ["santri-portal-bills-card", "santri-portal-schedule-list", "santri-portal-attendance-chart"]
+    }
+  ],
+  "image_urls": {
+    "pesantren_banner": "https://images.unsplash.com/photo-1569929919600-59123640bc02?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwzfHxpc2xhbWljJTIwYXJjaGl0ZWN0dXJlJTIwcGVzYW50cmVuJTIwTW9zcXVlJTIwc3R1ZGVudHxlbnwwfHx8fDE3OTE3OTA5MjN8MA&ixlib=rb-4.1.0&q=85",
+    "mosque_interior": "https://images.unsplash.com/photo-1577561426384-62154a1e9457?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwxfHxpc2xhbWljJTIwYXJjaGl0ZWN0dXJlJTIwcGVzYW50cmVuJTIwTW9zcXVlJTIwc3R1ZGVudHxlbnwwfHx8fDE3OTE3OTA5MjN8MA&ixlib=rb-4.1.0&q=85",
+    "student_reading": "https://images.unsplash.com/photo-1527285286036-1ae743926077?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1NzZ8MHwxfHNlYXJjaHw0fHxzdHVkZW50JTIwcmVhZGluZyUyMHN0dWR5JTIwbGlicmFyeSUyMHBvcnRyYWl0fGVufDB8fHx8MTc5MTc5MDkyNnww&ixlib=rb-4.1.0&q=85"
+  },
+  "instructions_to_main_agent": [
+    "Use JavaScript (.js / .jsx) for all React components in /app/frontend/src/.",
+    "Ensure ALL interactive buttons, input elements, tables, tab triggers, modal actions, and key values include explicit `data-testid` attributes.",
+    "Ensure login supports email for Staff/Admin/Ustadz and NIS for Santri with clear default password indicator '111111'.",
+    "Implement Top 5 Santri Ter-rajin (highest % kehadiran) and Top 5 Santri Ter-malas (lowest % / highest alpha) on Administrator & Pengurus dashboards.",
+    "Implement Kenaikan Kelas with bulk selection, class target dropdown, execution preview, and historical class promotion log.",
+    "Implement monthly payment grid @ Rp 100.000 starting 1 month after registration, registration fee @ Rp 150.000, and administrator payment status override for PKL (Dibebaskan).",
+    "Implement Envelope C5 Landscape (229mm x 162mm) print layout with exact Pesantren header and signature of currently logged-in user.",
+    "Ensure Sonner toast feedback for all CRUD operations, payment submissions, status updates, and print actions.",
+    "Never leave dropdowns or header backgrounds completely transparent without backdrop blurs or solid fills."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": {
+    "anti_slop_rules": [
+      "Avoid default Vercel-style blue or sterile grey. Use rich Emerald (#065F46) + Amber Gold (#D97706) tones tailored for Islamic educational institutions.",
+      "Use layered shadows, crisp 1px borders (slate-200/80), and rich contrast badges.",
+      "Do NOT add text-align: center to the root App container.",
+      "Do NOT use generic emoji characters like 🤖, 🧠, 💡 for UI icons. Use Lucide icons (lucide-react)."
+    ],
+    "spacing_and_padding": "Generous spacing scale: containers with borders MUST have p-4 to p-6 padding to prevent content text collision.",
+    "testing": "All interactive and key informational elements MUST include kebab-case role-based data-testid attributes."
+  }
+}
